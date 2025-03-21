@@ -1,5 +1,5 @@
 Tasks at hand 
-1) scrape pdf sections (working sol, kinda slow)
+1) scrape pdf sections (working sol, kinda slow - not anymore) ✅
 2) test out llm to make rules in simple english for a section 
 3) Rules in Mongo db(still not sure what to do)
 
