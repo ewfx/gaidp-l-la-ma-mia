@@ -10,7 +10,7 @@ def find_all_schedules(pdf_path, pageToSearchTill):
 
     with pdfplumber.open(pdf_path) as pdf:
         for i, page in enumerate(pdf.pages):
-            if i > pageToSearchTill:
+            if i >= pageToSearchTill:
                 break
             text = page.extract_text()
             if not text:
@@ -24,12 +24,15 @@ def find_all_schedules(pdf_path, pageToSearchTill):
 
     return sorted(schedules)
 
-def extract_subheadings_with_pages(pdf_path, schedule_heading="Schedule A"):
+def extract_subheadings_with_pages(pdf_path, pageToSearchTill, schedule_heading="Schedule A"):
     subheading_dict = {}
     found_schedule = False
+    found_next_schedule = False
 
     with pdfplumber.open(pdf_path) as pdf:
         for i, page in enumerate(pdf.pages):
+            if i >= pageToSearchTill:
+                break
             text = page.extract_text()
             if not text:
                 continue
@@ -38,20 +41,28 @@ def extract_subheadings_with_pages(pdf_path, schedule_heading="Schedule A"):
 
             for line in lines:
                 # Check for the Schedule Heading
-                if schedule_heading.lower() in line.lower():
-                    found_schedule = True
-                    continue
-
-                if found_schedule:
-                    # Stop if we reach next Schedule (e.g., Schedule B)
-                    if re.match(r'Schedule\s+[B-Z]', line.strip(), re.IGNORECASE):
-                        return subheading_dict
-
-                    # Extract subheading and page number (e.g., "Subheading Name ............. 12")
+                if not found_schedule and schedule_heading.lower() in line.lower():
                     match = re.match(r'^(.*?)[\s\.]+(\d+)$', line.strip())
                     if match:
                         title, page_num = match.groups()
                         subheading_dict[title.strip()] = int(page_num)
+                    found_schedule = True
+                    continue
+
+                if found_schedule:
+                        # Stop if we reach next Schedule (e.g., Schedule B)
+                    if not found_next_schedule and re.match(r'Schedule\s+[B-Z]', line.strip(), re.IGNORECASE):
+                        found_next_schedule = True
+                        match = re.match(r'^(.*?)[\s\.]+(\d+)$', line.strip())
+                        if match:
+                            _, page_num = match.groups()
+                            subheading_dict["END"] = int(page_num)
+                    if not found_next_schedule or re.search(fr'SUPPORTING DOCUMENTATION FOR {re.escape(schedule_heading)}', line.strip(), re.IGNORECASE):
+                        # Extract subheading and page number (e.g., "Subheading Name ............. 12")
+                        match = re.match(r'^(.*?)[\s\.]+(\d+)$', line.strip())
+                        if match:
+                            title, page_num = match.groups()
+                            subheading_dict[title.strip()] = int(page_num)
 
     return subheading_dict
 
@@ -100,7 +111,7 @@ def find_contents_and_first_heading(pdf_path):
                     match = re.match(r'^(.*?)[\s\.]+(\d+)$', line.strip())
                     if match:
                         heading, page_num = match.groups()
-                        return heading.strip(), int(page_num)
+                        return heading.strip(), int(page_num)-1
 
     return None, None
 
@@ -112,11 +123,14 @@ if __name__ == "__main__":
     print("Page to search till:", pageToSearchTill)
     schedules = find_all_schedules(pdf_path, pageToSearchTill)
     print(schedules)
-    schedule = "Schedule B"
+
+    # schedule = "Schedule C"
+    # headings = extract_subheadings_with_pages(pdf_path, pageToSearchTill, schedule_heading=schedule)
+    # print(f"Extracted Subheadings and Pages for {schedule}:", headings)
 
     for schedule in schedules:
         # 1. Extract subheadings under Schedule A
-        headings = extract_subheadings_with_pages(pdf_path, schedule_heading=schedule)
+        headings = extract_subheadings_with_pages(pdf_path, pageToSearchTill, schedule_heading=schedule)
         print(f"Extracted Subheadings and Pages for {schedule}:", headings)
 
     # extract_pdf_subset(pdf_path, "extracted_part.pdf", start_page=12, end_page=16)
