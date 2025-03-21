@@ -115,22 +115,51 @@ def find_contents_and_first_heading(pdf_path):
 
     return None, None
 
+def get_page_range(contents_dict, schedule, subheading):
+    """
+    Retrieves the start and end page range for a given schedule and subheading.
+    """
+    if schedule in contents_dict and subheading in contents_dict[schedule]:
+        start_page = contents_dict[schedule][subheading]
+        
+        # Find the next key in order that is not "Supporting documentation"
+        keys = list(contents_dict[schedule].keys())
+        current_index = keys.index(subheading)
+        end_page = None
+        
+        for next_key in keys[current_index + 1:]:
+            if "supporting documentation" not in next_key.lower():
+                end_page = contents_dict[schedule][next_key]
+                break
+        
+        # If no valid next key is found, default to the same as start_page
+        if end_page is None:
+            end_page = start_page
+        
+        return start_page, end_page
+    else:
+        raise ValueError(f"Subheading '{subheading}' not found in schedule '{schedule}'.")
+
 
 # === Example usage ===
 if __name__ == "__main__":
     pdf_path = "/Users/agastya/Documents/Projects/gaidp-l-la-ma-mia/code/src/backend/data/FR_Y-14Q20240331_i.pdf"
     _, pageToSearchTill = find_contents_and_first_heading(pdf_path)
-    print("Page to search till:", pageToSearchTill)
     schedules = find_all_schedules(pdf_path, pageToSearchTill)
-    print(schedules)
 
     # schedule = "Schedule C"
     # headings = extract_subheadings_with_pages(pdf_path, pageToSearchTill, schedule_heading=schedule)
     # print(f"Extracted Subheadings and Pages for {schedule}:", headings)
-
+    contents_dict = {}
     for schedule in schedules:
         # 1. Extract subheadings under Schedule A
         headings = extract_subheadings_with_pages(pdf_path, pageToSearchTill, schedule_heading=schedule)
-        print(f"Extracted Subheadings and Pages for {schedule}:", headings)
+        contents_dict[schedule] = headings
+        # print(f"Extracted Subheadings and Pages for {schedule}:", headings)
 
-    # extract_pdf_subset(pdf_path, "extracted_part.pdf", start_page=12, end_page=16)
+    print(contents_dict)
+
+    
+    start, end = get_page_range(contents_dict, "Schedule E", "E.2. INTERNAL BUSINESS LINE")
+    print(f"Page range for 'A.1 - INTERNATIONAL AUTO LOAN': {start} - {end}")
+    extract_pdf_subset(pdf_path, "extracted_part.pdf", start_page=start, end_page=end)
