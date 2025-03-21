@@ -1,4 +1,6 @@
 Tasks at hand 
-1) scrape pdf sections
+1) scrape pdf sections (working sol, kinda slow)
 2) test out llm to make rules in simple english for a section 
 3) Rules in Mongo db(still not sure what to do)
+
+/Users/parthshukla/Documents/_working_space/gaidp-l-la-ma-mia/code/src/backend/data/FR_Y-14Q20240331_i.pdf
