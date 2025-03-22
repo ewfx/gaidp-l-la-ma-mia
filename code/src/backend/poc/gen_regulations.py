@@ -29,12 +29,12 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
         "Content-Type": "application/json"
     }
 
-    prompt = f"Extract audit rules from the following text in short, one-line bullet points:\n\n{page_text}"
+    prompt = f"Extract data profiling rules from the following text for all variables / fields, make sure to only have 'variable : comma-separated rules' and no other extra text. Further where there are fixed values possible, mention that in the description :\n\n{page_text}"
 
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": "You are an expert in extracting audit rules.  Focus on what type of values are allowed for a column."},
+            {"role": "system", "content": "You are an expert in understanding audit rules. You can read through a bunch of text and figure out the variables / fields in the data and the meaning of each field. You can translate the long descriptions into simple data profiling rules."},
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.5,

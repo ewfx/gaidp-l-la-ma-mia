@@ -1,6 +1,5 @@
 # kinda slow
 
-
 import pdfplumber
 import re
 from PyPDF2 import PdfReader, PdfWriter
