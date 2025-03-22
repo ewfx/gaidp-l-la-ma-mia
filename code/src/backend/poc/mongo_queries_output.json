@@ -1,0 +1,194 @@
+[
+  {
+    "constraint": "SEGMENT_ID : unique identifier, 12-digit, based on segment ID positions and attribute codes",
+    "mongo_query": "db.collection.find({$or:[{\"SEGMENT_ID\":{$exists:false}},{\"SEGMENT_ID\":{$not:{$regex:\"^\\\\d{12}$\"}}}]})"
+  },
+  {
+    "constraint": "BHC_NAME : bank holding company name, text",
+    "mongo_query": "db.collection.find({BHC_NAME: {$type: \"string\"}})"
+  },
+  {
+    "constraint": "RSSD_ID : RSSD ID number, numeric",
+    "mongo_query": "db.collection.find({$or:[{\"RSSD_ID\":{$exists:false}},{\"RSSD_ID\":{$type:\"string\"}},{\"RSSD_ID\":null},{\"RSSD_ID\":{$lt:0}}]})"
+  },
+  {
+    "constraint": "REPORTING_MONTH : month of reporting, date format MM/YYYY",
+    "mongo_query": "db.collection.find({$or:[{\"REPORTING_MONTH\":{$not:/^\\d{2}\\/\\d{4}$/}},{\"REPORTING_MONTH\":{$not:{$regex:\"^(0[1-9]|1[0-2])\\/\\\\d{4}$\"}}}]});"
+  },
+  {
+    "constraint": "PORTFOLIO_ID : portfolio ID, fixed value \"Auto\"",
+    "mongo_query": "db.collection.find({PORTFOLIO_ID: {$ne: \"Auto\"}})"
+  },
+  {
+    "constraint": "PRODUCT_TYPE : product type segment, fixed values \"01\", \"02\", \"03\"",
+    "mongo_query": "db.collection.find({PRODUCT_TYPE: {$not: {$in: [\"01\", \"02\", \"03\"]}}})"
+  },
+  {
+    "constraint": "AGE : age segment, fixed values \"01\" to \"06\"",
+    "mongo_query": "db.collection.find({AGE: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\"]}}})"
+  },
+  {
+    "constraint": "ORIGINAL_LTV : original LTV segment, fixed values \"01\" to \"04\"",
+    "mongo_query": "db.collection.find({ORIGINAL_LTV: {$not: {$in: [\"01\", \"02\", \"03\", \"04\"]}}})"
+  },
+  {
+    "constraint": "ORIGINAL_CREDIT_SCORE : original industry standard credit score or equivalent segment, fixed values \"01\" to \"06\"",
+    "mongo_query": "db.collection.find({ORIGINAL_CREDIT_SCORE: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\"]}}})"
+  },
+  {
+    "constraint": "GEOGRAPHY : geography segment, fixed values \"01\" to \"06\"",
+    "mongo_query": "db.collection.find({GEOGRAPHY: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\"]}}})"
+  },
+  {
+    "constraint": "DELINQUENCY_STATUS : delinquency status segment, fixed values \"01\" to \"05\"",
+    "mongo_query": "db.collection.find({$or:[{\"DELINQUENCY_STATUS\":{$exists:false}},{\"DELINQUENCY_STATUS\":{$not:{$regex:\"^(0[1-5])$\"}}}]})"
+  },
+  {
+    "constraint": "Product type : 01, 02, 03, categorical, discrete",
+    "mongo_query": "db.collection.find({Product_type: {$not: {$in: [\"01\", \"02\", \"03\"]}}})"
+  },
+  {
+    "constraint": "Age : 01, 02, 03, 04, 05, 06, categorical, discrete, time-based",
+    "mongo_query": "db.collection.find({Age: {$not: {$in: [1, 2, 3, 4, 5, 6]}}})"
+  },
+  {
+    "constraint": "Original LTV : 01, 02, 03, 04, categorical, discrete, ratio-based, rounded",
+    "mongo_query": "db.collection.find({$or:[{\"Original LTV\":{$not:/^(0[1-4])$/}},{\"Original LTV\":{$type:\"string\"}},{\"Original LTV\":{$not:{$regex:\"^\\\\d{2}$\"}}}]})"
+  },
+  {
+    "constraint": "Original credit score : 00, 01, 02, 03, 04, 05, categorical, discrete, score-based",
+    "mongo_query": "db.collection.find({$or:[{\"Original credit score\":{$not:{$in:[ \"00\", \"01\", \"02\", \"03\", \"04\", \"05\"]}}}]})"
+  },
+  {
+    "constraint": "Geography : 01, 02, 03, 04, 05, categorical, discrete, location-based",
+    "mongo_query": "db.collection.find({Geography: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\"]}}})"
+  },
+  {
+    "constraint": "Region : fixed values (Vermont, New Hampshire, Nebraska, South Dakota, North Dakota)",
+    "mongo_query": "db.collection.find({ Region: { $not: { $in: [\"Vermont\", \"New Hampshire\", \"Nebraska\", \"South Dakota\", \"North Dakota\"] } } })"
+  },
+  {
+    "constraint": "Delinquency status : fixed values (01 - Current + 1-29 DPD, 02 - 30-59 DPD, 03 - 60-89 DPD, 04 - 90-119 DPD, 05 - 120+ DPD)",
+    "mongo_query": "db.collection.find({Delinquency_status: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\"]}}})"
+  },
+  {
+    "constraint": "# Accounts : non-negative integer",
+    "mongo_query": "db.Accounts.find({Accounts: {$lt: 0}})"
+  },
+  {
+    "constraint": "$ Outstandings : non-negative number",
+    "mongo_query": "db.collection.find({Outstandings: {$lt: 0}})"
+  },
+  {
+    "constraint": "# New accounts : non-negative integer",
+    "mongo_query": "db.collection.find({New_accounts: {$lt: 0}})"
+  },
+  {
+    "constraint": "$ New accounts : non-negative number",
+    "mongo_query": "db.collection.find({ \"New accounts\": { $lt: 0 } })"
+  },
+  {
+    "constraint": "Interest rate : non-negative number, percentage",
+    "mongo_query": "db.collection.find({$or:[{\"Interest rate\":{$lt:0}},{\"Interest rate\":{$not:{$type:\"number\"}}}]})"
+  },
+  {
+    "constraint": "$ Vehicle type car/van : non-negative number",
+    "mongo_query": "db.collection.find({$or:[{\"Vehicle type\":{$not:{$regex:\"^(car|van)$\"}}},{\"Vehicle type\":{$lt:0}}]})"
+  },
+  {
+    "constraint": "$ Vehicle type SUV/truck : non-negative number",
+    "mongo_query": "db.collection.find({$or:[{\"Vehicle type\":{\"$nin\":[\"SUV\",\"truck\"]}},{\"Vehicle type\":{$exists:false}},{\"non-negative number\":{$lt:0}}]})"
+  },
+  {
+    "constraint": "Vehicle type : categorical, values=Sport/Luxury/Convertible, Unknown",
+    "mongo_query": "db.collection.find({$or:[{\"Vehicle type\":{$exists:false}},{\"Vehicle type\":{$not:{$in:[\"Sport\",\"Luxury\",\"Convertible\",\"Unknown\"]}}}]})"
+  },
+  {
+    "constraint": "Repossession : non-negative, currency",
+    "mongo_query": "db.collection.find({$or:[{\"Repossession\":{$lt:0}},{\"Repossession\":{$not:/^\\d{1,3}(,\\d{3})*(\\.\\d+)?$/}}]})"
+  },
+  {
+    "constraint": "Current Month Repossession : non-negative, currency",
+    "mongo_query": "db.collection.find({$or:[{\"Current Month Repossession\":{$lt:0}},{\"Current Month Repossession\":{$not:{$type:\"number\"}}}]})"
+  },
+  {
+    "constraint": "Gross contractual charge-offs : non-negative, currency",
+    "mongo_query": "db.collection.find({$or:[{\"Gross contractual charge-offs\":{$lt:0}},{\"Gross contractual charge-offs\":{$not:{$type:\"number\"}}}]})"
+  },
+  {
+    "constraint": "Bankruptcy charge-offs : non-negative, currency",
+    "mongo_query": "db.collection.find({$or:[{\"Bankruptcy charge-offs\":{$lt:0}},{\"Bankruptcy charge-offs\":{$not:{$type:\"number\"}}}]})"
+  },
+  {
+    "constraint": "Recoveries : numeric, currency",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Net charge-offs : numeric, currency",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Adjustment factor : numeric, currency, optional",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Ever 30DPD in the last 12 months : numeric, non-negative, currency",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Ever 60DPD in the last 12 months : numeric, non-negative, currency",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Projected value : numeric, non-negative, currency, applicable only for leased vehicles",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Actual sale proceeds : numeric, non-negative, currency, applicable only for leased vehicles",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Original term : categorical, values: <=48, 49-60, 61-72, >72 months",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Origination channel : categorical, values: direct, non-direct",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Loss mitigation : numeric, non-negative, currency, applicable only for accounts in loss mitigation programs",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Joint application : numeric, non-negative, currency, applicable only for accounts with co-applicant",
+    "mongo_query": "db.collection.find({$or:[{\"Joint application\":{$not:{$type:\"number\"}}},{\"Joint application\":{$lt:0}},{\"Joint application\":{$exists:false}},{\"co-applicant\":{$exists:false}}]})"
+  },
+  {
+    "constraint": "Probability of Default (PD) : numeric, between 0 and 1, applicable only for advanced approaches reporting banks",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Loss Given Default (LGD) : numeric, between 0 and 1, applicable only for advanced approaches reporting banks",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "ELGD : numeric, non-negative, decimal values with maximum 1, possible fixed values: 0.9 for 90% loss, missing values reported as null",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "RWA : numeric, non-negative, aggregate dollar value, applicable only to advanced approaches banks, required for BHC or IHC or SLHC-owned loans",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "$ Unpaid Principal Balance at Charge-off : numeric, non-negative, total unpaid principal balance, excludes interest and fees",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Percent Loss Severity (3 month Lagged) : numeric, non-negative, percentage value, calculated as total loss net of recoveries, lagged by 3 months",
+    "mongo_query": ""
+  },
+  {
+    "constraint": "Weighted Average Life of Loans : numeric, non-negative, time to principal repayment in months, rounded to nearest monthly term, reflects current position and behavioral assumptions",
+    "mongo_query": ""
+  }
+]

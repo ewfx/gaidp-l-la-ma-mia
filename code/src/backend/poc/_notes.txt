@@ -9,3 +9,5 @@ Tasks at hand
 
 
 clear transformer cache - rm -rf ~/.cache/huggingface
+
+tables can have foeign key
