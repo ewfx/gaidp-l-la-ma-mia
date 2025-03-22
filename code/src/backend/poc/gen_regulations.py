@@ -34,7 +34,7 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": "You are an expert in extracting audit rules."},
+            {"role": "system", "content": "You are an expert in extracting audit rules.  Focus on what type of values are allowed for a column."},
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.5,
