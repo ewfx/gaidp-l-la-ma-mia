@@ -1,0 +1,67 @@
+Rule,Page Number
+"Here are the audit rules extracted from the text in short, one-line bullet points:",1
+* Include only domestic auto loans and leases as defined in FR Y-9C.,1
+"* Include repossessed auto loans as defined in FR Y-9C, Schedule HC-F, item 6.",1
+"* Only include ""managed"" loans originated by the BHC or IHC or SLHC.",1
+* Exclude loans originated by a third party and only serviced by the BHC or IHC or SLHC.,1
+* Only include loans and leases held for investment at amortized cost.,1
+* Exclude loans or leases held for sale or held for investment and measured at fair value.,1
+* Segment the portfolio along all combinations of segment variables.,1
+* Use a unique 12-digit segment ID for each segment.,1
+"* Report summary variables for each of the 10,800 portfolio segments.",1
+* Report data for each month in the required reporting period.,1
+"* Start each row of data with BHC or IHC or SLHC name, RSSD ID, reporting month, and portfolio ID.",1
+* Provide all dollar amounts in millions.,1
+* Calculate account weighted average for Summary Variable line items 28-31.,1
+* Use loan level parameters for all accounts in a specific segment.,1
+* Use Basel data from the prior quarter if not refreshed monthly.,1
+"Here are the audit rules extracted from the text in short, one-line bullet points:",2
+"* Segment portfolio by product type (new auto loans, used auto loans, auto leases)",2
+"* Segment portfolio by age (6 categories: 5+ years, 4-5 years, 3-4 years, 2-3 years, 1-2 years, <1 year)",2
+"* Segment portfolio by original LTV (4 categories: <=90, 91-120, >120, N/A)",2
+"* Segment portfolio by original credit score (6 categories: <=560, 561-620, 621-660, 661-720, >720, N/A)",2
+* Segment portfolio by geography (6 regions based on borrower's residence),2
+"Here are the audit rules extracted from the text in short, one-line bullet points:",3
+"* Classify accounts into 5 delinquency statuses: current, 1-29 DPD, 30-59 DPD, 60-89 DPD, and 90+ DPD.",3
+"* Report summary variables for each segment, including # accounts, $ outstandings, # new accounts, $ new accounts, interest rate, and vehicle type.",3
+"* Classify vehicles by body style, with luxury vehicles meeting high price and performance standards.",3
+"* Calculate average annual percentage rate using purchase APR, default APR, or workout APR as applicable.",3
+"* Report unpaid principal balance by vehicle type, including car/van and SUV/truck.",3
+* Follow standard practice for assigning date of origination for new accounts.,3
+* Distinguish between accruing and non-accruing accounts when reporting delinquency status.,3
+"Here are the audit rules extracted in short, one-line bullet points:",4
+* Verify unpaid principal balance for Sport/Luxury/Convertible vehicle type.,4
+* Verify unpaid principal balance for Unknown vehicle type.,4
+* Verify unpaid principal balance for repossessed vehicles.,4
+* Verify unpaid principal balance for newly repossessed vehicles in the current month.,4
+"* Verify gross contractual charge-offs against Schedule HI-B, Part I, Column A of the FR Y-9C.",4
+"* Verify bankruptcy charge-offs against Schedule HI-B, Part I, Column A of the FR Y-9C.",4
+"* Verify recoveries against Schedule HI-B, Part I, Column B of the FR Y-9C.",4
+* Verify net charge-offs calculation as [$ Gross Contractual Charge-offs + $ Bankruptcy Charge-offs - $ Recoveries].,4
+* Reconcile any difference between $ Net Charge-offs and [$ Gross Contractual Charge-offs + $ Bankruptcy Charge-offs - $ Recoveries].,4
+"Here are the audit rules extracted in short, one-line bullet points:",5
+* Ever 30DPD in the last 12 months: Identify loans 30+ days past due in the last 12 months.,5
+* Ever 60DPD in the last 12 months: Identify loans 60+ days past due in the last 12 months.,5
+* Projected value: Calculate projected market value of leased vehicles at termination.,5
+* Actual sale proceeds: Track sales proceeds from terminated leases.,5
+* Original term <= 48 months: Identify loans with original terms of 48 months or less.,5
+* Original term 49-60 months: Identify loans with original terms of 49-60 months.,5
+* Original term 61-72 months: Identify loans with original terms of 61-72 months.,5
+* Original term > 72 months: Identify loans with original terms greater than 72 months.,5
+* Origination channel (direct): Identify loans originated through direct channels.,5
+* Loss mitigation: Identify loans in loss mitigation programs.,5
+* Joint application: Identify loans with co-applicants.,5
+* Probability of Default (PD): Calculate average PD for accounts in the segment.,5
+* Loss Given Default (LGD): Calculate average LGD for accounts in the segment.,5
+"Here are the audit rules extracted from the text in short, one-line bullet points:",6
+* Report ELGD parameter as defined in the most recent capital framework.,6
+* Calculate account weighted average ELGD of all accounts in the segment.,6
+* Report missing or unavailable ELGD values as null.,6
+* Report RWA for accounts within the segment as defined in the most recent capital framework.,6
+* Calculate RWA associated with each account based on the IRB Risk-Based Capital Formula.,6
+"* Report unpaid principal balance at charge-off, excluding interest and fees.",6
+* Categorize charged-off loans by delinquency status at charge-off.,6
+* Report percent loss severity as a percent of unpaid principal balance for charged-off accounts.,6
+* Exclude losses or recoveries on loans charged-off for the first time in later months.,6
+"* Reflect current position, new business activity, and behavioral assumptions in weighted average life of loans.",6
+* Round weighted average life of loans to the nearest monthly term.,6

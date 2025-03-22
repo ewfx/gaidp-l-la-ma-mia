@@ -107,16 +107,16 @@ def find_contents_and_first_heading(pdf_path):
 
 # === Example usage ===
 if __name__ == "__main__":
-    pdf_path = "/Users/agastya/Documents/Projects/gaidp-l-la-ma-mia/code/src/backend/data/FR_Y-14Q20240331_i.pdf"
-    _, pageToSearchTill = find_contents_and_first_heading(pdf_path)
-    print("Page to search till:", pageToSearchTill)
-    schedules = find_all_schedules(pdf_path, pageToSearchTill)
-    print(schedules)
-    schedule = "Schedule B"
+    pdf_path = "/Users/parthshukla/Documents/_working_space/gaidp-l-la-ma-mia/code/src/backend/data/FR_Y-14Q20240331_i.pdf"
+    # _, pageToSearchTill = find_contents_and_first_heading(pdf_path)
+    # print("Page to search till:", pageToSearchTill)
+    # schedules = find_all_schedules(pdf_path, pageToSearchTill)
+    # print(schedules)
+    # schedule = "Schedule B"
 
-    for schedule in schedules:
-        # 1. Extract subheadings under Schedule A
-        headings = extract_subheadings_with_pages(pdf_path, schedule_heading=schedule)
-        print(f"Extracted Subheadings and Pages for {schedule}:", headings)
+    # for schedule in schedules:
+    #     # 1. Extract subheadings under Schedule A
+    #     headings = extract_subheadings_with_pages(pdf_path, schedule_heading=schedule)
+    #     print(f"Extracted Subheadings and Pages for {schedule}:", headings)
 
-    # extract_pdf_subset(pdf_path, "extracted_part.pdf", start_page=12, end_page=16)
+    extract_pdf_subset(pdf_path, "extracted_part.pdf", start_page=17, end_page=22)
