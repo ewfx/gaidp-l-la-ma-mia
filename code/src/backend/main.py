@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import base_rules
+from pymongo import MongoClient
+from routers import base
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
+    "http://localhost:8000",
 ]
 
 app.add_middleware(
@@ -16,4 +17,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(base_rules.router)
+# MongoDB connection setup
+MONGO_URI = "mongodb://localhost:27017"
+client = MongoClient(MONGO_URI)
+db = client["my_database"]  # Replace "my_database" with your database name
+
+# Dependency to access the database
+def get_database():
+    return db
+
+app.include_router(base.router)
