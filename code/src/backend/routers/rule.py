@@ -14,7 +14,7 @@ mock_rules_db = [
 def get_rules():
     return dto(isSuccess=True, data=mock_rules_db)
 
-@router.post("/rule")
+@router.post("")
 def create_or_update_rule(rule: RuleInputModel):
     for existing_rule in mock_rules_db:
         if existing_rule["id"] == rule.id:
