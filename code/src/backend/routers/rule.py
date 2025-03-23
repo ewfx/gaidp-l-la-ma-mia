@@ -38,3 +38,10 @@ def get_rules(pdf: str, schedule: str, category: str):
 @router.post("")
 def create_or_update_rule(rule: RuleInputModel):    
     return dto(isSuccess=True, data={"message": "Rule created successfully", "rule": "temp"})
+
+
+# @agastya just started working on this, see if better way
+# @router.post("/add_rule")
+# def add_rule(rule: RuleInputModel):
+#     try:
+        

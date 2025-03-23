@@ -47,12 +47,14 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
 
 
 # ========== 3. Save Rules to CSV ==========
-def save_rules_to_csv(rules, output_file='audit_rules_groq.csv'):
+def save_rules_to_csv(rules, output_file='audit_rules_groq_api.csv'):
     with open(output_file, mode='w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(['Rule', 'Page Number'])
+        writer.writerow(['Field', 'Rule', 'Page Number'])
         for rule, page in rules:
-            writer.writerow([rule, page])
+            field = rule.split(':')[0].strip()
+            rule = rule.split(':')[1].strip()
+            writer.writerow([field, rule, page])
 
 
 # ========== 4. Main Pipeline Execution ==========
@@ -68,12 +70,12 @@ def gen_rules(pdf_path, api_key):
 
     print("Saving rules to CSV file...")
     save_rules_to_csv(all_rules)
-    print("✅ Audit rule extraction complete! Output saved to 'audit_rules_groq.csv'.")
+    print("✅ Audit rule extraction complete! Output saved to 'audit_rules_groq_api.csv'.")
 
 
 # ========== 5. Run ==========
 if __name__ == "__main__":
-    input_pdf = "extracted_part.pdf"  # Update if needed
+    input_pdf = "/Users/parthshukla/Documents/_working_space/gaidp-l-la-ma-mia/code/src/backend/poc/extracted_part.pdf"  # Update if needed
     groq_api_key = os.getenv("GROQ_API_KEY")  # Set your Groq API key as environment variable
     if not groq_api_key:
         print("❌ ERROR: Please set your Groq API key as an environment variable 'GROQ_API_KEY'")
