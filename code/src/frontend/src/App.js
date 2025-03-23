@@ -7,11 +7,15 @@ import {
   Button,
   Menu,
   MenuItem,
+  Box,
+  IconButton,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import HomeComponent from "./pages/HomeComponent/HomeComponent";
 import "./App.css";
 import ProfilingRulesComponent from "./pages/ProfilingRulesComponent/ProfilingRulesComponent";
 import DataComponent from "./pages/DataComponent/DataComponent";
+
 function App() {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -28,9 +32,11 @@ function App() {
       <div className="App">
         <AppBar position="static" style={{ backgroundColor: "#DD1E25" }}>
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Box sx={{ flexGrow: 1 }} />
+            <Typography variant="h6" component="div" sx={{ flexGrow: 0 }}>
               Data Profiler
             </Typography>
+            <Box sx={{ flexGrow: 1 }} />
             <div>
               <Button color="inherit" component={Link} to="/">
                 Home
