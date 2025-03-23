@@ -31,9 +31,8 @@ function App() {
     <Router>
       <div className="App">
         <AppBar position="static" style={{ backgroundColor: "#DD1E25" }}>
-          <Toolbar>
-            <Box sx={{ flexGrow: 1 }} />
-            <Typography variant="h6" component="div" sx={{ flexGrow: 0 }}>
+          <Toolbar sx={{height: "64px"}}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Data Profiler
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
