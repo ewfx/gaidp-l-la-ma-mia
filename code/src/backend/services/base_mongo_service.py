@@ -59,14 +59,26 @@ class BaseMongoService:
         
         return {"message": "Document deleted successfully"}
 
-    def get_all(self, query: Optional[Dict[str, Any]] = None) -> list:
+    def get_all(self, query: Optional[Dict[str, Any]] = None, fields: Optional[Dict[str, int]] = None) -> list:
         """
-        Retrieve all documents matching a query.
+        Retrieve all documents matching a query with optional field selection.
+        :param query: The query to filter documents.
+        :param fields: A dictionary specifying the fields to include or exclude (e.g., {"field_name": 1} to include or {"field_name": 0} to exclude).
         """
         query = query or {}
-        print(self.collection)
-        documents = list(self.collection.find(query))
-        print(f"Found {len(documents)} documents")
+        fields = fields or {}  # Default to no field selection (return all fields)
+        documents = list(self.collection.find(query, fields))
+        for document in documents:
+            document["_id"] = str(document["_id"])  # Convert ObjectId to string
+        return documents
+    
+    def get_all_with_pagination(self, query: Optional[Dict[str, Any]] = None, page_size: int = 10, page_number: int = 1) -> list:
+        """
+        Retrieve all documents matching a query with pagination.
+        """
+        query = query or {}
+        skip = (page_number - 1) * page_size
+        documents = list(self.collection.find(query).skip(skip).limit(page_size))
         for document in documents:
             document["_id"] = str(document["_id"])  # Convert ObjectId to string
         return documents
