@@ -14,25 +14,25 @@ function SelectorComponent({
     <Box
       sx={{
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         gap: 2,
-        marginTop: "20px",
-        marginLeft: "20px",
+        marginTop: "30px",
+        marginLeft: "30px",
       }}
     >
-      <FormControl variant="outlined" sx={{ minWidth: 200 }}>
+      <FormControl variant="outlined" sx={{ minWidth: 300, maxWidth: 300 }}>
         <InputLabel>PDF Name</InputLabel>
         <Select value={selectedPdf} onChange={handlePdfChange} label="PDF Name">
           {categories.map((category) => (
-            <MenuItem key={category.pdfName} value={category.pdfName}>
-              {category.pdfName}
+            <MenuItem key={category.Name} value={category.Name}>
+              {category.Name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
       <FormControl
         variant="outlined"
-        sx={{ minWidth: 200 }}
+        sx={{ minWidth: 200, maxWidth: 200 }}
         disabled={!selectedPdf}
       >
         <InputLabel>Schedule</InputLabel>
@@ -42,18 +42,18 @@ function SelectorComponent({
           label="Schedule"
         >
           {getSchedules().map((schedule) => (
-            <MenuItem key={schedule.scheduleName} value={schedule.scheduleName}>
-              {schedule.scheduleName}
+            <MenuItem key={schedule.Name} value={schedule.Name}>
+              {schedule.Name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
       <FormControl
         variant="outlined"
-        sx={{ minWidth: 200 }}
+        sx={{ minWidth: 350, maxWidth: 350 }}
         disabled={!selectedSchedule}
       >
-        <InputLabel>Section</InputLabel>
+        <InputLabel>Category</InputLabel>
         <Select
           value={selectedSection}
           onChange={handleSectionChange}
