@@ -1,7 +1,12 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from routers import base
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file
+load_dotenv()
 
 app = FastAPI()
 
@@ -16,14 +21,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# MongoDB connection setup
-MONGO_URI = "mongodb://localhost:27017"
-client = MongoClient(MONGO_URI)
-db = client["my_database"]  # Replace "my_database" with your database name
-
-# Dependency to access the database
-def get_database():
-    return db
 
 app.include_router(base.router)
