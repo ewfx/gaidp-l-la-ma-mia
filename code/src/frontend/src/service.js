@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 // Function to handle GET requests
-export const getData = async () => {
+export const getCategoryData = async () => {
   try {
     const response = await api.get("/file/list");
     if (response && response.data && response.data.isSuccess) {
@@ -69,13 +69,14 @@ export const getData = async () => {
 };
 
 // Function to handle POST requests
-export const postData = async (endpoint, data) => {
+export const getChatQueryResponse = async (query) => {
   try {
-    const response = await api.post(endpoint, data);
+    const response = await api.post("chat/getResponse", query);
     return response.data;
   } catch (error) {
     console.error("Error posting data:", error);
-    throw error;
+    //throw error;
+    return "Error fetching response";
   }
 };
 

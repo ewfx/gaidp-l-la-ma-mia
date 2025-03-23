@@ -14,10 +14,10 @@ function SelectorComponent({
     <Box
       sx={{
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         gap: 2,
-        marginTop: "20px",
-        marginLeft: "20px",
+        marginTop: "30px",
+        marginLeft: "30px",
       }}
     >
       <FormControl variant="outlined" sx={{ minWidth: 250, maxWidth: 250 }}>

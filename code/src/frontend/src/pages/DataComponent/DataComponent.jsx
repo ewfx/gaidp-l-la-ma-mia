@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getData } from "../../service.js";
+import { getCategoryData } from "../../service.js";
 import SelectorComponent from "../../components/SelectorComponent.jsx";
 
 function DataComponent() {
@@ -9,7 +9,7 @@ function DataComponent() {
   const [selectedSection, setSelectedSection] = useState("");
 
   useEffect(() => {
-    getData().then((data) => {
+    getCategoryData().then((data) => {
       setCategories(data);
     });
   }, []);

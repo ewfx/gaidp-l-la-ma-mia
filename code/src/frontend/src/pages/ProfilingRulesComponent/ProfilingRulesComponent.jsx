@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { getData } from "../../service.js";
+import { getCategoryData } from "../../service.js";
 import SelectorComponent from "../../components/SelectorComponent.jsx";
+import ChatComponent from "../../components/ChatComponent.jsx";
 
 function ProfilingRulesComponent() {
   const [categories, setCategories] = useState([]);
@@ -9,7 +10,7 @@ function ProfilingRulesComponent() {
   const [selectedSection, setSelectedSection] = useState("");
 
   useEffect(() => {
-    getData().then((data) => {
+    getCategoryData().then((data) => {
       setCategories(data);
     });
   }, []);
@@ -62,7 +63,7 @@ function ProfilingRulesComponent() {
           display: "flex",
           flexDirection: "column",
           height: "100%",
-          width: "65%",
+          width: "70%",
         }}
       >
         <SelectorComponent
@@ -82,10 +83,12 @@ function ProfilingRulesComponent() {
           display: "flex",
           flexDirection: "column",
           height: "100%",
-          width: "35%",
-          backgroundColor: "black",
+          width: "30%",
+          backgroundColor: "#24222F",
         }}
-      ></div>
+      >
+        <ChatComponent />
+      </div>
     </div>
   );
 }
