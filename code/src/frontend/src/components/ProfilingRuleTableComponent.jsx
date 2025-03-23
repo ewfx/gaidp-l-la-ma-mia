@@ -11,20 +11,18 @@ import {
   Collapse,
 } from "@mui/material";
 
-function DataTableComponent({ profiledData }) {
+function ProfilingRuleTableComponent({ profilingRuleData }) {
   const [open, setOpen] = useState(true);
 
   return (
-    <div
-      style={{ textAlign: "center", marginTop: "20px", marginBottom: "30px" }}
-    >
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
       <Button
         variant="contained"
         color="primary"
         onClick={() => setOpen(!open)}
         sx={{ marginBottom: "20px" }}
       >
-        {open ? "Hide Data" : "Show Data"}
+        {open ? "Hide Profiling Rules" : "Show Profiling Rules"}
       </Button>
 
       <Collapse in={open}>
@@ -44,42 +42,33 @@ function DataTableComponent({ profiledData }) {
                   sx={{ border: "1px solid #ddd", color: "white" }}
                   align="left"
                 >
-                  Data ID
-                </TableCell>
-                <TableCell
-                  sx={{ border: "1px solid #ddd", color: "white" }}
-                  align="left"
-                >
-                  Profiling Rule Violated
-                </TableCell>
-                <TableCell
-                  sx={{ border: "1px solid #ddd", color: "white" }}
-                  align="left"
-                >
                   Associated Column
                 </TableCell>
                 <TableCell
                   sx={{ border: "1px solid #ddd", color: "white" }}
                   align="left"
                 >
-                  Remediation
+                  Profiling Rule
+                </TableCell>
+                <TableCell
+                  sx={{ border: "1px solid #ddd", color: "white" }}
+                  align="left"
+                >
+                  Page No.
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {profiledData.map((row) => (
-                <TableRow key={row.id}>
+              {profilingRuleData.map((row) => (
+                <TableRow key={row._id + row.rule}>
                   <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.id}
+                    {row.columnName}
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.profilingRuleViolated}
+                    {row.rule}
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.column}
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.remediation}
+                    {row.page}
                   </TableCell>
                 </TableRow>
               ))}
@@ -91,4 +80,4 @@ function DataTableComponent({ profiledData }) {
   );
 }
 
-export default DataTableComponent;
+export default ProfilingRuleTableComponent;

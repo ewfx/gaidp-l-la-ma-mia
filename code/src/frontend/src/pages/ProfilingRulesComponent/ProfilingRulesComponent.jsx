@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { getCategoryData } from "../../service.js";
+import {
+  getCategoryData,
+  getProfiledData,
+  getProfilingRules,
+} from "../../service.js";
 import SelectorComponent from "../../components/SelectorComponent.jsx";
 import ChatComponent from "../../components/ChatComponent.jsx";
+import DataTableComponent from "../../components/DataTableComponent.jsx";
+import ProfilingRuleTableComponent from "../../components/ProfilingRuleTableComponent.jsx";
 
 function ProfilingRulesComponent() {
   const [categories, setCategories] = useState([]);
   const [selectedPdf, setSelectedPdf] = useState("");
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [selectedSection, setSelectedSection] = useState("");
+  const [profiledData, setProfiledData] = useState([]);
+  const [profilingRuleData, setProfilingRuleData] = useState([]);
 
   useEffect(() => {
     getCategoryData().then((data) => {
       setCategories(data);
+    });
+    getProfiledData().then((data) => {
+      setProfiledData(data);
+    });
+    getProfilingRules().then((data) => {
+      console.log(data);
+      setProfilingRuleData(data);
     });
   }, []);
 
@@ -64,6 +79,7 @@ function ProfilingRulesComponent() {
           flexDirection: "column",
           height: "100%",
           width: "70%",
+          overflow: "auto",
         }}
       >
         <SelectorComponent
@@ -77,6 +93,8 @@ function ProfilingRulesComponent() {
           handleSectionChange={handleSectionChange}
           getSections={getSections}
         />
+        <ProfilingRuleTableComponent profilingRuleData={profilingRuleData} />
+        <DataTableComponent profiledData={profiledData} />
       </div>
       <div
         style={{

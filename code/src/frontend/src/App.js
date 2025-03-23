@@ -39,6 +39,7 @@ function App() {
                 position: "absolute",
                 left: "50%",
                 transform: "translateX(-50%)",
+                fontWeight: "bold",
               }}
             >
               Data Profiler
@@ -48,11 +49,8 @@ function App() {
               <Button color="inherit" component={Link} to="/">
                 Home
               </Button>
-              <Button color="inherit" component={Link} to="/profiling-rules">
-                Profiling Rules
-              </Button>
-              <Button color="inherit" component={Link} to="/data">
-                Data
+              <Button color="inherit" component={Link} to="/profiling">
+                Profiling
               </Button>
             </div>
             <Menu
@@ -73,26 +71,15 @@ function App() {
               <MenuItem onClick={handleClose} component={Link} to="/">
                 Home
               </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={Link}
-                to="/profiling-rules"
-              >
-                Profiling Rules
-              </MenuItem>
-              <MenuItem onClick={handleClose} component={Link} to="/data">
-                Data
+              <MenuItem onClick={handleClose} component={Link} to="/profiling">
+                Profiling
               </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
         <Routes>
           <Route path="/" element={<HomeComponent />} />
-          <Route
-            path="/profiling-rules"
-            element={<ProfilingRulesComponent />}
-          />
-          <Route path="/data" element={<DataComponent />} />
+          <Route path="/profiling" element={<ProfilingRulesComponent />} />
           {/* Add other routes here */}
         </Routes>
       </div>

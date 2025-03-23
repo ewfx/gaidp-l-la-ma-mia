@@ -20,7 +20,7 @@ function SelectorComponent({
         marginLeft: "30px",
       }}
     >
-      <FormControl variant="outlined" sx={{ minWidth: 250, maxWidth: 250 }}>
+      <FormControl variant="outlined" sx={{ minWidth: 300, maxWidth: 300 }}>
         <InputLabel>PDF Name</InputLabel>
         <Select value={selectedPdf} onChange={handlePdfChange} label="PDF Name">
           {categories.map((category) => (
@@ -32,7 +32,7 @@ function SelectorComponent({
       </FormControl>
       <FormControl
         variant="outlined"
-        sx={{ minWidth: 250, maxWidth: 250 }}
+        sx={{ minWidth: 200, maxWidth: 200 }}
         disabled={!selectedPdf}
       >
         <InputLabel>Schedule</InputLabel>
@@ -50,7 +50,7 @@ function SelectorComponent({
       </FormControl>
       <FormControl
         variant="outlined"
-        sx={{ minWidth: 250, maxWidth: 250 }}
+        sx={{ minWidth: 350, maxWidth: 350 }}
         disabled={!selectedSchedule}
       >
         <InputLabel>Category</InputLabel>
