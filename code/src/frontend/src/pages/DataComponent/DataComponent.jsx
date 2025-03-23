@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { getData } from "../../service.js";
+import { getData, getProfiledData } from "../../service.js";
 import SelectorComponent from "../../components/SelectorComponent.jsx";
+import DataTableComponent from "../../components/DataTableComponent.jsx";
 
 function DataComponent() {
   const [categories, setCategories] = useState([]);
   const [selectedPdf, setSelectedPdf] = useState("");
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [selectedSection, setSelectedSection] = useState("");
+  const [profiledData, setProfiledData] = useState([]);
 
   useEffect(() => {
     getData().then((data) => {
       setCategories(data);
+    });
+  }, []);
+
+  // Set Profiled Data
+
+  useEffect(() => {
+    getProfiledData().then((data) => {
+      setProfiledData(data);
     });
   }, []);
 
@@ -54,6 +64,10 @@ function DataComponent() {
         selectedSection={selectedSection}
         handleSectionChange={handleSectionChange}
         getSections={getSections}
+      />
+      <br/>
+      <DataTableComponent
+        profiledData={profiledData}
       />
     </div>
   );

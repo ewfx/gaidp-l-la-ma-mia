@@ -52,6 +52,36 @@ export const getData = async (endpoint) => {
   }
 };
 
+//Function to get Profiled Data Component info
+export const getProfiledData = async (endpoint) => {
+  try {
+    const response = await api.get(endpoint);
+    if (response && response.data && response.data.isSuccess) {
+      return response.data.data;
+    } else {
+      throw new Error("Error fetching data");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    //throw error;
+    //dummy data being returned if api is not up
+    return [
+      {
+        id: "001",
+        profilingRuleViolated: "Data is future",
+        column: "date",
+        remediation: "change it to current or past"
+      },
+      {
+        id: "002",
+        profilingRuleViolated: "balance has special characters",
+        column: "balance",
+        remediation: "update field to be numeric "
+      },
+    ];
+  }
+};
+
 // Function to handle POST requests
 export const postData = async (endpoint, data) => {
   try {
