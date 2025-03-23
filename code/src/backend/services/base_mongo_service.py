@@ -17,6 +17,13 @@ class BaseMongoService:
         """
         result = self.collection.insert_one(data)
         return {"inserted_id": str(result.inserted_id)}
+    
+    def create_many(self, data: list[Dict]) -> list[Dict]:
+        """
+        Create a new document in the collection.
+        """
+        result = self.collection.insert_many(data)
+        return {"inserted_ids": str(result.inserted_ids)}
 
     def get_by_id(self, document_id: str) -> Optional[Dict[str, Any]]:
         """
@@ -82,3 +89,17 @@ class BaseMongoService:
         for document in documents:
             document["_id"] = str(document["_id"])  # Convert ObjectId to string
         return documents
+
+    def is_query_valid(self, query_string: str) -> bool:
+        """
+        Check if a MongoDB query string is syntactically correct by dynamically executing it.
+        :param query_string: The query string to validate.
+        :return: True if the query is valid, False otherwise.
+        """
+        try:
+            # Dynamically execute the query string
+            exec(query_string)
+            return True
+        except Exception as e:
+            print(f"Query validation error: {e}")
+            return False
