@@ -31,12 +31,20 @@ function App() {
     <Router>
       <div className="App">
         <AppBar position="static" style={{ backgroundColor: "#DD1E25" }}>
-          <Toolbar sx={{height: "64px"}}>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Toolbar sx={{ height: "64px" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
               Data Profiler
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
-            <div>
+            <div style={{ marginLeft: "auto" }}>
               <Button color="inherit" component={Link} to="/">
                 Home
               </Button>

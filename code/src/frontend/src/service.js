@@ -9,9 +9,9 @@ const api = axios.create({
 });
 
 // Function to handle GET requests
-export const getData = async (endpoint) => {
+export const getData = async () => {
   try {
-    const response = await api.get(endpoint);
+    const response = await api.get("/file/list");
     if (response && response.data && response.data.isSuccess) {
       return response.data.data;
     } else {
@@ -23,28 +23,44 @@ export const getData = async (endpoint) => {
     //dummy data being returned if api is not up
     return [
       {
-        pdfName: "samplePdf1.pdf",
-        schedules: [
+        Name: "samplePdf1.pdf",
+        Schedules: [
           {
-            scheduleName: "schedule1",
-            sections: ["AFS Auto", "Car Loan", "LIQ"],
+            Name: "schedule1",
+            Categories: [
+              { Name: "AFS Auto", page: 1 },
+              { Name: "Car Loan", page: 2 },
+              { Name: "LIQ", page: 3 },
+            ],
           },
           {
-            scheduleName: "schedule2",
-            sections: ["AFS Auto2", "Car Loan2", "LIQ2"],
+            Name: "schedule2",
+            Categories: [
+              { Name: "AFS Auto2", page: 1 },
+              { Name: "Car Loan2", page: 2 },
+              { Name: "LIQ2", page: 3 },
+            ],
           },
         ],
       },
       {
-        pdfName: "samplePdf2.pdf",
-        schedules: [
+        Name: "samplePdf2.pdf",
+        Schedules: [
           {
-            scheduleName: "schedule2",
-            sections: ["Commercial Loan", "Car Loan", "LIQ"],
+            Name: "schedule2",
+            Categories: [
+              { Name: "AFS Auto", page: 1 },
+              { Name: "Car Loan", page: 2 },
+              { Name: "LIQ", page: 3 },
+            ],
           },
           {
-            scheduleName: "schedule3",
-            sections: ["AFS Auto3", "LIQ3"],
+            Name: "schedule3",
+            Categories: [
+              { Name: "AFS Auto2", page: 1 },
+              { Name: "Car Loan2", page: 2 },
+              { Name: "LIQ2", page: 3 },
+            ],
           },
         ],
       },
