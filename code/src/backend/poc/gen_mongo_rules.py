@@ -2,6 +2,7 @@ import csv
 import json
 import requests
 import os
+import openai
 
 # CONFIG
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
@@ -35,6 +36,25 @@ def get_mongo_query_from_llm(constraint):
         print(f"Error parsing response: {e}")
         return ""
 
+def get_mongo_query_using_openai(constraint):
+    openai.api_key = GROQ_API_KEY
+    openai.base_url = "https://api.groq.com/openai/v1/"  # Important: override base_url for Groq
+
+    try:
+        response = openai.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=[
+                {"role": "system", "content": "You are an expert in MongoDB. Write a Mongo query to find all the records that violate the contraints. Give me ONLY the query. Do not put newline characters in the query."},
+                {"role": "user", "content": f"We have the following the constraint(<Column name>: <constraint>): {constraint}"}
+            ],
+            temperature=0.3
+        )
+        query = response.choices[0].message.content.strip()
+        return query
+    except Exception as e:
+        print(f"OpenAI-Groq Error: {e}")
+        return ""
+
 # Read CSV and process constraints
 def process_csv_and_generate_queries():
     queries = []
@@ -44,7 +64,8 @@ def process_csv_and_generate_queries():
             constraint = row.get(CONSTRAINT_COLUMN)
             if constraint:
                 print(f"Processing constraint: {constraint}")
-                mongo_query = get_mongo_query_from_llm(constraint)
+                # mongo_query = get_mongo_query_from_llm(constraint)
+                mongo_query = get_mongo_query_using_openai(constraint)
                 queries.append({"constraint": constraint, "mongo_query": mongo_query})
     return queries
 
