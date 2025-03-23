@@ -1,26 +1,40 @@
+import os
 from fastapi import APIRouter, HTTPException
 from dto.response_dto import ResponseDTO as dto
-from models.rule_input_model import RuleInputModel  # Import the model
+from models.rule_get_request_model import RuleGetRequestModel
+from models.rule_input_model import RuleInputModel
+from pymongo import MongoClient
+from services.base_mongo_service import BaseMongoService
+from dotenv import load_dotenv
+
+router = APIRouter(prefix="/file")
+
+# Initialize MongoDB client
+load_dotenv()
+MONGO_URI = os.environ.get("MONGO_URI")
+mongo_client = MongoClient(MONGO_URI)
+print("MongoDB connected")
 
 router = APIRouter(prefix="/rule")
 
-# Mock database for demonstration
-mock_rules_db = [
-    {"id": 1, "rule": "Rule 1 description"},
-    {"id": 2, "rule": "Rule 2 description"},
-]
-
 @router.get("")
-def get_rules():
-    return dto(isSuccess=True, data=mock_rules_db)
+def get_rules(pdf: str, schedule: str, category: str):
+    try:
+        # Convert query parameters into a RuleGetRequestModel object
+        request = RuleGetRequestModel(pdf=pdf, schedule=schedule, category=category)
+        
+        # Create a service for the "data_field" collection in the "my_database" database
+        print(f"collection: {request.pdf}_{request.schedule}_{request.category}")
+        data_field_service = BaseMongoService(mongo_client, f"{request.pdf}_{request.schedule}_{request.category}")
+        
+        # Retrieve all documents in the collection with specific fields
+        documents = data_field_service.get_all(
+            fields={"_id": 1, "columnName": 1, "description": 1, "rules": 1}
+        )
+        return dto(isSuccess=True, data=documents)
+    except Exception as e:
+        return dto(isSuccess=False, errorMessage=str(e))
 
 @router.post("")
-def create_or_update_rule(rule: RuleInputModel):
-    for existing_rule in mock_rules_db:
-        if existing_rule["id"] == rule.id:
-            existing_rule["rule"] = rule.rule
-            return dto(isSuccess=True, data={"message": "Rule updated successfully", "rule": existing_rule})
-    
-    new_rule = {"id": rule.id, "rule": rule.rule}
-    mock_rules_db.append(new_rule)
-    return dto(isSuccess=True, data={"message": "Rule created successfully", "rule": new_rule})
+def create_or_update_rule(rule: RuleInputModel):    
+    return dto(isSuccess=True, data={"message": "Rule created successfully", "rule": "temp"})
