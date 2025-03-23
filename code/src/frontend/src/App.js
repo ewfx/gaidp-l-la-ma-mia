@@ -27,7 +27,7 @@ function App() {
     <Router>
       <div className="App">
         <AppBar position="static" style={{ backgroundColor: "#DD1E25" }}>
-          <Toolbar>
+          <Toolbar sx={{height: "64px"}}>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Data Profiler
             </Typography>
