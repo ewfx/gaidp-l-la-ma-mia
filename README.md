@@ -57,4 +57,4 @@ Describe the major technical or non-technical challenges your team encountered.
 
 ## 👥 Team
 - **Parth Shukla** - [GitHub](#) | [LinkedIn](#)
-- **Teammate 2** - [GitHub](#) | [LinkedIn](#)
+- **Agastya Varma** - [GitHub](#) | [LinkedIn](#)
