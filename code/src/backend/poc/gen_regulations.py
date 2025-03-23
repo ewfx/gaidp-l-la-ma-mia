@@ -29,12 +29,14 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
         "Content-Type": "application/json"
     }
 
+    output_format = '''{"columnName": <string>,"description": <string>,"rules": [{"rule": <string>,"query": <string>}],"foreignRules": [{"rule": <string>,"query": <string>}]}'''
+
     prompt = f"Extract data profiling rules from the following text for all variables / fields, make sure to only have 'variable : comma-separated rules' and no other extra text. Further where there are fixed values possible, mention that in the description :\n\n{page_text}"
 
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": "You are an expert in understanding audit rules. You can read through a bunch of text and figure out the variables / fields in the data and the meaning of each field. You can translate the long descriptions into simple data profiling rules."},
+            {"role": "system", "content": "You are an expert in understanding audit rules. You can read through a bunch of text and figure out the variables / fields in the data and the meaning of each field. You can translate the long descriptions into simple data profiling rules. Avoid putting $ and # in the output. Put them in the format: {output_format}"},
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.5,
@@ -53,7 +55,7 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
 
 
 # ========== 3. Save Rules to CSV ==========
-def save_rules_to_csv(rules, output_file='audit_rules_groq.csv'):
+def save_rules_to_csv(rules, output_file='audit_rules_groq_2.csv'):
     with open(output_file, mode='w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(['Rule', 'Page Number'])
@@ -74,7 +76,7 @@ def main(pdf_path, api_key):
 
     print("Saving rules to CSV file...")
     save_rules_to_csv(all_rules)
-    print("✅ Audit rule extraction complete! Output saved to 'audit_rules_groq.csv'.")
+    print("✅ Audit rule extraction complete! Output saved to 'audit_rules_groq_2.csv'.")
 
 
 # ========== 5. Run ==========

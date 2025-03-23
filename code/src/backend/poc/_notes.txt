@@ -11,3 +11,6 @@ Tasks at hand
 clear transformer cache - rm -rf ~/.cache/huggingface
 
 tables can have foeign key
+
+
+{"columnName": <string>,"description": <string>,"rules": [{"rule": <string>,"query": <string>}],"foreignRules": [{"rule": <string>,"query": <string>}]}
