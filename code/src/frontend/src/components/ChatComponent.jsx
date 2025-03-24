@@ -5,15 +5,25 @@ import {
   Card,
   CardContent,
   InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 
 export default function ChatComponent() {
-  const [messages, setMessages] = useState([
-    { text: "Hi! You can modify rule in simple language by identifying field using a #. For example, #age should not be negative", sender: "bot" },
-  ]);
+  const initialBotMessage = {
+    text: "Hi! You can modify rule in simple language by identifying field using a #. For example, #age should not be negative",
+    sender: "bot",
+  };
+
+  const [messages, setMessages] = useState([initialBotMessage]);
   const [input, setInput] = useState("");
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [pendingUpdate, setPendingUpdate] = useState(null); // Store the pending update
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -24,29 +34,30 @@ export default function ChatComponent() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-  
+
     // Add the user's message to the chat
     const newMessages = [...messages, { text: input, sender: "user" }];
     setMessages(newMessages);
     setInput("");
-  
+
     try {
       // Make a POST request to the chat endpoint
       const response = await axios.post("http://127.0.0.1:8000/chat/", {
         message: input,
       });
-  
-      // Log the response to inspect its structure
-      console.log("Response data:", response.data.data);
-  
-      // Extract the message or convert the object to a string
+
+      // Extract the response from the backend
       const botReply =
         typeof response.data.data === "string"
           ? response.data.data
           : JSON.stringify(response.data.data);
-  
+
       // Add the system's reply to the chat
       setMessages([...newMessages, { text: botReply, sender: "bot" }]);
+
+      // Store the pending update and open the confirmation dialog
+      setPendingUpdate(response.data.data);
+      setConfirmDialogOpen(true);
     } catch (error) {
       console.error("Error fetching response:", error);
       setMessages([
@@ -54,6 +65,48 @@ export default function ChatComponent() {
         { text: "Error fetching response from the server.", sender: "bot" },
       ]);
     }
+  };
+
+  const confirmUpdate = async () => {
+    if (!pendingUpdate) return;
+
+    try {
+      // Make a POST request to update the rule in the database
+      const response = await axios.post("http://127.0.0.1:8000/chat/update", {
+        updated_rule: pendingUpdate,
+      });
+
+      if (response.data.isSuccess) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: "Changes have been successfully updated in the database.", sender: "bot" },
+          initialBotMessage, // Add the starting prompt after the success message
+        ]);
+      } else {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: "Failed to update changes in the database.", sender: "bot" },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error updating the database:", error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: "Error updating the database.", sender: "bot" },
+      ]);
+    } finally {
+      setConfirmDialogOpen(false);
+      setPendingUpdate(null);
+    }
+  };
+
+  const cancelUpdate = () => {
+    setConfirmDialogOpen(false);
+    setPendingUpdate(null);
+    setMessages([
+      initialBotMessage,
+      { text: "Changes were not confirmed and have been discarded.", sender: "bot" },
+    ]);
   };
 
   return (
@@ -143,6 +196,32 @@ export default function ChatComponent() {
           placeholder="Type a message..."
         />
       </div>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={cancelUpdate}
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-description"
+      >
+        <DialogTitle id="confirm-dialog-title">Confirm Changes</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-dialog-description">
+            Do you want to confirm the following changes and update the database?
+          </DialogContentText>
+          <pre style={{ backgroundColor: "#f4f4f4", padding: "8px", borderRadius: "4px" }}>
+            {JSON.stringify(pendingUpdate, null, 2)}
+          </pre>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelUpdate} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={confirmUpdate} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
