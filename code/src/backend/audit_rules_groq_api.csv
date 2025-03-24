@@ -1,0 +1,49 @@
+Field,Rule,Page Number
+SEGMENT_ID,"unique identifier, twelve-digit, based on segment ID positions and attribute codes",1
+BHC_NAME,"name of BHC or IHC or SLHC, text",1
+RSSD_ID,"RSSD ID number, numeric",1
+REPORTING_MONTH,"month of reporting, date",1
+PORTFOLIO_ID,"portfolio ID, fixed value ""Auto""",1
+PRODUCT_TYPE,"product type, fixed values ""01"", ""02"", ""03"", categorical",1
+AGE,"age of loan, fixed values ""01"" to ""06"", categorical",1
+ORIGINAL_LTV,"original loan-to-value, fixed values ""01"" to ""04"", categorical",1
+ORIGINAL_CREDIT_SCORE,"original credit score, fixed values ""01"" to ""06"", categorical",1
+GEOGRAPHY,"geography, fixed values ""01"" to ""06"", categorical",1
+DELINQUENCY_STATUS,"delinquency status, fixed values ""01"" to ""05"", categorical",1
+Product type,"categorical, values = 01, 02, 03, description = New auto loans, Used auto loans, Auto leases",2
+Age,"categorical, values = 01, 02, 03, 04, 05, 06, description = time elapsed since loan origination",2
+Original LTV,"categorical, values = 01, 02, 03, 04, description = loan to value ratio at origination",2
+Original commercially available credit bureau score,"categorical, values = 00, 01, 02, 03, 04, 05, description = credit score of borrower at origination",2
+Geography,"categorical, values = 01, 02, 03, 04, 05, description = primary borrower's current place of residence",2
+Region,"fixed values - Vermont, New Hampshire, Nebraska, South Dakota, North Dakota",3
+Delinquency status,"fixed values - 01, 02, 03, 04, 05, description - current, 1-29 days past due, 30-59 days past due, 60-89 days past due, 90-119 days past due, 120 or more days past due",3
+Accounts,non-negative integer,3
+Outstandings,"non-negative number, currency",3
+New accounts,non-negative integer,3
+New accounts amount,"non-negative number, currency",3
+Interest rate,"non-negative number, percentage",3
+Vehicle type car/van,"non-negative number, currency",3
+Vehicle type SUV/truck,"non-negative number, currency",3
+Vehicle type,"categorical, values include Sport/Luxury/Convertible, Unknown",4
+Repossession,non-negative numeric,4
+Current Month Repossession,non-negative numeric,4
+Gross contractual charge-offs,non-negative numeric,4
+Bankruptcy charge-offs,non-negative numeric,4
+Recoveries,numeric,4
+Net charge-offs,numeric,4
+Adjustment factor to reconcile gross contractual charge-offs to net charge-offs,numeric,4
+Ever 30DPD in the last 12 months,"numeric, greater than or equal to 0, past due amount",5
+Ever 60DPD in the last 12 months,"numeric, greater than or equal to 0, past due amount",5
+Projected value,"numeric, greater than or equal to 0, applicable only for leased vehicles",5
+Actual sale proceeds,"numeric, greater than or equal to 0, applicable only for leased vehicles",5
+Original term,"categorical, values = <= 48 months, 49-60 months, 61-72 months, > 72 months",5
+Origination channel,"categorical, values = direct, non-direct",5
+Loss mitigation,"numeric, greater than or equal to 0, loss mitigation program status",5
+Joint application,"categorical, values = yes, no",5
+Probability of Default (PD),"numeric, between 0 and 1, average probability of default",5
+Loss Given Default (LGD),"numeric, between 0 and 1, average loss given default",5
+ELGD,"numeric, non-negative, decimal values with possible values like 0.9, missing or unavailable values reported as null",6
+RWA,"numeric, non-negative, aggregate dollar value, applicable only to banks subject to advanced approaches rule",6
+Unpaid Principal Balance at Charge-off,"numeric, non-negative, total unpaid principal balance at charge-off, excludes interest and fees",6
+Percent Loss Severity (3 month Lagged),"numeric, non-negative, percent of unpaid principal balance, calculated net of all recoveries",6
+Weighted Average Life of Loans,"numeric, non-negative, weighted average time to principal repayment, rounded to nearest monthly term",6

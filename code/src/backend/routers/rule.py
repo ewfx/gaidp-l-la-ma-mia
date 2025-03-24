@@ -16,7 +16,7 @@ mongo_client = MongoClient(MONGO_URI)
 print("MongoDB connected")
 
 router = APIRouter(prefix="/rule")
-
+# http://127.0.0.1:8000/rule?pdf=PDFName&schedule=ScheduleA&category=USAutoLoan
 @router.get("")
 def get_rules(pdf: str, schedule: str, category: str):
     try:
@@ -38,3 +38,10 @@ def get_rules(pdf: str, schedule: str, category: str):
 @router.post("")
 def create_or_update_rule(rule: RuleInputModel):    
     return dto(isSuccess=True, data={"message": "Rule created successfully", "rule": "temp"})
+
+
+# @agastya just started working on this, see if better way
+# @router.post("/add_rule")
+# def add_rule(rule: RuleInputModel):
+#     try:
+        

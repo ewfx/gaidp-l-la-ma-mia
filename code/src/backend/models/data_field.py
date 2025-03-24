@@ -17,9 +17,16 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
+# @agastya I added this
 class Rule(BaseModel):
+    field: str 
     rule: str
     query: str
+    page: int
+# Prithvi
+# class Rule(BaseModel):
+#     rule: str
+#     query: str
 
 class DataField(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id")

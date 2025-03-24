@@ -1,0 +1,52 @@
+Rule,Page Number
+"SEGMENT_ID : unique identifier, 12 digits, combination of product type, age, original LTV, original industry standard credit score, geography, delinquency status",1
+"BHC_NAME : bank holding company name, text",1
+"RSSD_ID : RSSD ID number, numeric",1
+"REPORTING_MONTH : month of reporting, date format, fixed values: January to December",1
+"PORTFOLIO_ID : portfolio ID, text, fixed value: Auto",1
+"PRODUCT_TYPE : product type, text, fixed values: 01, 02, 03",1
+"AGE : age, numeric, fixed values: 01, 02, 03, 04, 05, 06",1
+"ORIGINAL_LTV : original LTV, numeric, fixed values: 01, 02, 03, 04",1
+"ORIGINAL_INDUSTRY_STANDARD_CREDIT_SCORE : original industry standard credit score, numeric, fixed values: 01, 02, 03, 04, 05, 06",1
+"GEOGRAPHY : geography, text, fixed values: 01, 02, 03, 04, 05, 06",1
+"DELINQUENCY_STATUS : delinquency status, text, fixed values: 01, 02, 03, 04, 05",1
+"Product type : categorical, values = 01, 02, 03, fixed values",2
+"Age : categorical, values = 01, 02, 03, 04, 05, 06, fixed values",2
+"Original LTV : categorical, values = 01, 02, 03, 04, fixed values",2
+"Original commercially available credit bureau score or equivalent : categorical, values = 00, 01, 02, 03, 04, 05, fixed values",2
+"Geography : categorical, values = 01, 02, 03, 04, 05, fixed values",2
+"Region : fixed values (Vermont, New Hampshire, Nebraska, South Dakota, North Dakota), categorical",3
+"Delinquency status : fixed values (01 - Current + 1-29 DPD, 02 - 30-59 DPD, 03 - 60-89 DPD, 04 - 90-119 DPD, 05 - 120+ DPD), categorical",3
+"Accounts : non-negative integer, total number of accounts",3
+"Outstandings : non-negative number, total unpaid principal balance",3
+"New accounts : non-negative integer, total number of new accounts",3
+"New accounts amount : non-negative number, total dollar amount of new accounts",3
+"Interest rate : non-negative number, average annual percentage rate",3
+"Vehicle type car/van : non-negative number, unpaid principal balance for car/van",3
+"Vehicle type SUV/truck : non-negative number, unpaid principal balance for SUV/truck",3
+"Vehicle type : categorical, values include Sport/Luxury/Convertible, Unknown",4
+Repossession : non-negative numeric,4
+Current Month Repossession : non-negative numeric,4
+Gross contractual charge-offs : non-negative numeric,4
+Bankruptcy charge-offs : non-negative numeric,4
+Recoveries : numeric,4
+Net charge-offs : numeric,4
+Adjustment factor to reconcile gross contractual charge-offs to net charge-offs : numeric,4
+"Ever 30DPD in the last 12 months : non-negative, numeric, past due amount",5
+"Ever 60DPD in the last 12 months : non-negative, numeric, past due amount",5
+"Projected value : non-negative, numeric, applicable for leased vehicles",5
+"Actual sale proceeds : non-negative, numeric, applicable for leased vehicles",5
+"Original term <= 48 months : non-negative, numeric, term in months",5
+"Original term 49-60 months : non-negative, numeric, term in months",5
+"Original term 61-72 months : non-negative, numeric, term in months",5
+"Original term > 72 months : non-negative, numeric, term in months",5
+"Origination channel : direct, indirect",5
+"Loss mitigation : yes, no",5
+"Joint application : yes, no",5
+"Probability of Default (PD) : numeric, between 0 and 1",5
+"Loss Given Default (LGD) : numeric, between 0 and 1",5
+"ELGD : numeric, non-negative, less than or equal to 1, may be null, fixed values possible (e.g. 0.9 for ninety percent)",6
+"RWA : numeric, non-negative, may be null",6
+"Unpaid Principal Balance at Charge-off : numeric, non-negative, may be null",6
+"Percent Loss Severity (3 month Lagged) : numeric, non-negative, less than or equal to 1, may be null",6
+"Weighted Average Life of Loans : numeric, non-negative, may be null, rounded to nearest monthly term",6
