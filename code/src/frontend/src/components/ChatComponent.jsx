@@ -11,7 +11,7 @@ import axios from "axios";
 
 export default function ChatComponent() {
   const [messages, setMessages] = useState([
-    { text: "Hi! How can I help you?", sender: "bot" },
+    { text: "Hi! You can modify rule in simple language by identifying field using a #. For example, #age should not be negative", sender: "bot" },
   ]);
   const [input, setInput] = useState("");
 
