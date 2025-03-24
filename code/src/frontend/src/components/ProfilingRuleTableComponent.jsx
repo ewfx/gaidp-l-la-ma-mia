@@ -48,27 +48,40 @@ function ProfilingRuleTableComponent({ profilingRuleData }) {
                   sx={{ border: "1px solid #ddd", color: "white" }}
                   align="left"
                 >
+                  Description
+                </TableCell>
+                <TableCell
+                  sx={{ border: "1px solid #ddd", color: "white" }}
+                  align="left"
+                >
                   Profiling Rule
                 </TableCell>
                 <TableCell
                   sx={{ border: "1px solid #ddd", color: "white" }}
                   align="left"
                 >
-                  Page No.
+                  Query
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {profilingRuleData.map((row) => (
-                <TableRow key={row._id + row.rule}>
+                <TableRow key={row.columnName}>
                   <TableCell sx={{ border: "1px solid #ddd" }} align="left">
                     {row.columnName}
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.rule}
+                    {row.description}
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.page}
+                    {row.rules.map((ruleObj, index) => (
+                      <div key={index}>{ruleObj.rule}</div>
+                    ))}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #ddd" }} align="left">
+                    {row.rules.map((ruleObj, index) => (
+                      <div key={index}>{ruleObj.query}</div>
+                    ))}
                   </TableCell>
                 </TableRow>
               ))}

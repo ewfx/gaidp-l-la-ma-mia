@@ -13,7 +13,7 @@ load_dotenv()
 MONGO_URI = os.environ.get("MONGO_URI")
 mongo_client = MongoClient(MONGO_URI)
 print("MongoDB connected")
-
+#http://127.0.0.1:8000/chat/
 @router.post("/")
 def chat_service(request: MessageDTO):
     message = request.message

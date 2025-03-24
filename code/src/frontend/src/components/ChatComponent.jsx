@@ -6,34 +6,12 @@ import {
   CardContent,
   InputAdornment,
 } from "@mui/material";
-import { getChatQueryResponse } from "../service";
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 
 export default function ChatComponent() {
   const [messages, setMessages] = useState([
     { text: "Hi! How can I help you?", sender: "bot" },
-    {
-      text: "Can you tell me which profiling rule is making segment ID 2345 be marked?",
-      sender: "user",
-    },
-    {
-      text: "Sure! Its the profiling rule 'UPB<1000' : The segment ID 2345 was marked because the upb is equal to $523, it should ideally be >=$1000.",
-      sender: "bot",
-    },
-    { text: "Oh okay, Got it.", sender: "user" },
-    { text: "Do you want to see a remediation rule for it?", sender: "bot" },
-    { text: "Yes", sender: "user" },
-    {
-      text: "First, check if the upb is really $523 since ideally it should be >$1000. If it has a valid reason, We cant really change an UPB, so you can just mark the segment as an exception and also fill hte exception reason accordingly. ",
-      sender: "bot",
-    },
-    { text: "Thanks!", sender: "user" },
-    {
-      text: "No problem! Do you need help with anything else?",
-      sender: "bot",
-    },
-    { text: "No, Thank You!", sender: "user" },
   ]);
   const [input, setInput] = useState("");
 
@@ -46,21 +24,34 @@ export default function ChatComponent() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
+  
+    // Add the user's message to the chat
     const newMessages = [...messages, { text: input, sender: "user" }];
     setMessages(newMessages);
     setInput("");
-
+  
     try {
-      const response = getChatQueryResponse(input);
-      setMessages([
-        ...newMessages,
-        { text: response.data.reply, sender: "bot" },
-      ]);
+      // Make a POST request to the chat endpoint
+      const response = await axios.post("http://127.0.0.1:8000/chat/", {
+        message: input,
+      });
+  
+      // Log the response to inspect its structure
+      console.log("Response data:", response.data.data);
+  
+      // Extract the message or convert the object to a string
+      const botReply =
+        typeof response.data.data === "string"
+          ? response.data.data
+          : JSON.stringify(response.data.data);
+  
+      // Add the system's reply to the chat
+      setMessages([...newMessages, { text: botReply, sender: "bot" }]);
     } catch (error) {
+      console.error("Error fetching response:", error);
       setMessages([
         ...newMessages,
-        { text: "Error fetching response", sender: "bot" },
+        { text: "Error fetching response from the server.", sender: "bot" },
       ]);
     }
   };

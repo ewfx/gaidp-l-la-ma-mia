@@ -16,7 +16,7 @@ mongo_client = MongoClient(MONGO_URI)
 print("MongoDB connected")
 
 router = APIRouter(prefix="/rule")
-
+# http://127.0.0.1:8000/rule?pdf=PDFName&schedule=ScheduleA&category=USAutoLoan
 @router.get("")
 def get_rules(pdf: str, schedule: str, category: str):
     try:
