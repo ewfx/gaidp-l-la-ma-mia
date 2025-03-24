@@ -4,6 +4,7 @@ import SelectorComponent from "../../components/SelectorComponent.jsx";
 import ChatComponent from "../../components/ChatComponent.jsx";
 import DataTableComponent from "../../components/DataTableComponent.jsx";
 import ProfilingRuleTableComponent from "../../components/ProfilingRuleTableComponent.jsx";
+import { Button, Snackbar, Alert } from "@mui/material";
 
 function ProfilingRulesComponent() {
   const [categories, setCategories] = useState([]);
@@ -12,6 +13,10 @@ function ProfilingRulesComponent() {
   const [selectedSection, setSelectedSection] = useState("USAutoLoan"); // Default value for selectedSection
   const [profiledData, setProfiledData] = useState([]);
   const [profilingRuleData, setProfilingRuleData] = useState([]);
+  const [csvFile, setCsvFile] = useState(null); // State to store the selected CSV file
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar visibility
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // State for Snackbar message
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // State for Snackbar severity
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -57,6 +62,45 @@ function ProfilingRulesComponent() {
     } catch (error) {
       console.error("Error fetching profiling rules:", error);
     }
+  };
+
+  const handleCsvUpload = async () => {
+    if (!csvFile) {
+      alert("Please select a CSV file to upload.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", csvFile);
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/data/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("CSV upload response:", response.data);
+
+      // Show success popup
+      setSnackbarMessage("CSV file uploaded successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error uploading CSV file:", error);
+
+      // Show error popup
+      setSnackbarMessage("Failed to upload CSV file.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleFileChange = (event) => {
+    setCsvFile(event.target.files[0]);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const handlePdfChange = (event) => {
@@ -119,7 +163,20 @@ function ProfilingRulesComponent() {
           getSections={getSections}
         />
         <ProfilingRuleTableComponent profilingRuleData={profilingRuleData} />
-        <DataTableComponent profiledData={profiledData} />
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "16px" }}>
+          <DataTableComponent profiledData={profiledData} />
+          <div>
+            <input type="file" accept=".csv" onChange={handleFileChange} />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCsvUpload}
+              style={{ marginTop: "8px" }}
+            >
+              Upload CSV
+            </Button>
+          </div>
+        </div>
       </div>
       <div
         style={{
@@ -132,6 +189,18 @@ function ProfilingRulesComponent() {
       >
         <ChatComponent />
       </div>
+
+      {/* Snackbar for upload notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
