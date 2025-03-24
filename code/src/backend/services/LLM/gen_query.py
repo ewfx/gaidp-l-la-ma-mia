@@ -97,7 +97,7 @@ def save_rules_to_csv(rules_by_data_element, output_file='audit_rules_by_data_el
 
 
 # ========== 4. Main Pipeline Execution ==========
-def main(pdf_path, api_key):
+def gen_queries(pdf_path, api_key):
     print("Extracting all text from PDF...")
     all_text = extract_all_text(pdf_path)
 
@@ -120,4 +120,4 @@ if __name__ == "__main__":
     if not groq_api_key:
         print("❌ ERROR: Please set your Groq API key as an environment variable 'GROQ_API_KEY'")
     else:
-        main(input_pdf, groq_api_key)
+        gen_queries(input_pdf, groq_api_key)

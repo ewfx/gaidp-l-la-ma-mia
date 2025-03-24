@@ -177,3 +177,5 @@ cython_debug/
 # macbook files
 .DS_Store
 keys.txt
+.tmp
+tmp/
