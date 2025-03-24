@@ -9,9 +9,9 @@ const api = axios.create({
 });
 
 // Function to handle GET requests
-export const getData = async (endpoint) => {
+export const getCategoryData = async () => {
   try {
-    const response = await api.get(endpoint);
+    const response = await api.get("/file/list");
     if (response && response.data && response.data.isSuccess) {
       return response.data.data;
     } else {
@@ -23,28 +23,44 @@ export const getData = async (endpoint) => {
     //dummy data being returned if api is not up
     return [
       {
-        pdfName: "samplePdf1.pdf",
-        schedules: [
+        Name: "samplePdf1.pdf",
+        Schedules: [
           {
-            scheduleName: "schedule1",
-            sections: ["AFS Auto", "Car Loan", "LIQ"],
+            Name: "schedule1",
+            Categories: [
+              { Name: "AFS Auto", page: 1 },
+              { Name: "Car Loan", page: 2 },
+              { Name: "LIQ", page: 3 },
+            ],
           },
           {
-            scheduleName: "schedule2",
-            sections: ["AFS Auto2", "Car Loan2", "LIQ2"],
+            Name: "schedule2",
+            Categories: [
+              { Name: "AFS Auto2", page: 1 },
+              { Name: "Car Loan2", page: 2 },
+              { Name: "LIQ2", page: 3 },
+            ],
           },
         ],
       },
       {
-        pdfName: "samplePdf2.pdf",
-        schedules: [
+        Name: "samplePdf2.pdf",
+        Schedules: [
           {
-            scheduleName: "schedule2",
-            sections: ["Commercial Loan", "Car Loan", "LIQ"],
+            Name: "schedule2",
+            Categories: [
+              { Name: "AFS Auto", page: 1 },
+              { Name: "Car Loan", page: 2 },
+              { Name: "LIQ", page: 3 },
+            ],
           },
           {
-            scheduleName: "schedule3",
-            sections: ["AFS Auto3", "LIQ3"],
+            Name: "schedule3",
+            Categories: [
+              { Name: "AFS Auto2", page: 1 },
+              { Name: "Car Loan2", page: 2 },
+              { Name: "LIQ2", page: 3 },
+            ],
           },
         ],
       },
@@ -52,14 +68,128 @@ export const getData = async (endpoint) => {
   }
 };
 
-// Function to handle POST requests
-export const postData = async (endpoint, data) => {
+//Function to get Profiled Data Component info
+export const getProfiledData = async () => {
   try {
-    const response = await api.post(endpoint, data);
+    const response = await api.get("/file/getProfiledDate");
+    if (response && response.data && response.data.isSuccess) {
+      return response.data.data;
+    } else {
+      throw new Error("Error fetching data");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    //throw error;
+    //dummy data being returned if api is not up
+    return [
+      {
+        id: "001",
+        profilingRuleViolated: "Data is future",
+        column: "date",
+        remediation: "change it to current or past",
+      },
+      {
+        id: "002",
+        profilingRuleViolated: "balance has special characters",
+        column: "balance",
+        remediation: "update field to be numeric ",
+      },
+    ];
+  }
+};
+
+//Function to get Profiling Rules Data
+export const getProfilingRules = async () => {
+  let data = [];
+  try {
+    const response = await api.get("/file/getProfiledDate");
+    let data = [];
+    if (response && response.data && response.data.isSuccess) {
+      if (response.data.data.length() !== 0) data = response.data.data;
+    } else {
+      //throw new Error("Error fetching data");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    //throw error;
+    //dummy data being returned if api is not up
+    data = [
+      {
+        _id: "67dfbf1250b7ef3de85d4d11",
+        columnName: "email",
+        description: "User's email address",
+        rules: [
+          {
+            rule: "Email must be in valid format",
+            query:
+              "{ email: { $not: { $regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' } } }",
+            page: 1,
+          },
+          {
+            rule: "Email must be unique across all records",
+            query:
+              "{ $group: { _id: '$email', count: { $sum: 1 } }, $having: { count: { $gt: 1 } } }",
+            page: 2,
+          },
+        ],
+      },
+      {
+        _id: "67dfbf1250b7ef3de85d4d12",
+        columnName: "phoneNumber",
+        description: "Contact phone number",
+        rules: [
+          {
+            rule: "Phone number must be 10 digits long",
+            query: "{ phoneNumber: { $not: { $regex: '^\\d{10}$' } } }",
+            page: 3,
+          },
+          {
+            rule: "Phone number must not be empty if required",
+            query: "{ phoneNumber: { $exists: true, $eq: '' } }",
+            page: 4,
+          },
+        ],
+      },
+      {
+        _id: "67dfbf1250b7ef3de85d4d13",
+        columnName: "orderStatus",
+        description: "Current status of the order",
+        rules: [
+          {
+            rule: "Status must be one of: pending, processing, shipped, delivered, cancelled",
+            query:
+              "{ orderStatus: { $nin: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] } }",
+            page: 6,
+          },
+        ],
+      },
+    ];
+  }
+  //now we have data
+  let profilingRuleData = [];
+  data.forEach((element) => {
+    let rules = element.rules;
+    rules.forEach((rule) => {
+      profilingRuleData.push({
+        _id: element._id,
+        columnName: element.columnName,
+        rule: rule.rule,
+        page: rule.page,
+      });
+    });
+  });
+  return profilingRuleData;
+};
+
+// Function to handle POST requests
+export const getChatQueryResponse = async (query) => {
+  try {
+    const response = await api.post("/chat/getResponse", query);
     return response.data;
   } catch (error) {
     console.error("Error posting data:", error);
-    throw error;
+    //throw error;
+    return "Error fetching response";
   }
 };
 

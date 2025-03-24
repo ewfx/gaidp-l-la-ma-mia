@@ -13,15 +13,24 @@ function HomeComponent() {
   }, []);
 
   return (
-    <div style={{ textAlign: "center", height: "calc(100vh - 64px)", position: "relative", overflow: "hidden" }}>
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px", marginTop: "50px"}}>
+    <div
+      style={{
+        textAlign: "center",
+        height: "calc(100vh - 64px)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <h1
+        style={{ fontSize: "2.5rem", marginBottom: "20px", marginTop: "50px" }}
+      >
         Simplifying Data Profiling & Anomaly Detection
       </h1>
       <p style={{ fontSize: "1.2rem", marginBottom: "40px" }}>
         Empowering the Organization with smarter insights and cleaner data.
       </p>
       <button
-        onClick={() => navigate("/profiling-rules")}
+        onClick={() => navigate("/profiling")}
         style={{
           padding: "15px 30px",
           fontSize: "1rem",

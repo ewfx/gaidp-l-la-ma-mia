@@ -31,20 +31,26 @@ function App() {
     <Router>
       <div className="App">
         <AppBar position="static" style={{ backgroundColor: "#DD1E25" }}>
-          <Toolbar sx={{height: "64px"}}>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Toolbar sx={{ height: "64px" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+                fontWeight: "bold",
+              }}
+            >
               Data Profiler
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
-            <div>
+            <div style={{ marginLeft: "auto" }}>
               <Button color="inherit" component={Link} to="/">
                 Home
               </Button>
-              <Button color="inherit" component={Link} to="/profiling-rules">
-                Profiling Rules
-              </Button>
-              <Button color="inherit" component={Link} to="/data">
-                Data
+              <Button color="inherit" component={Link} to="/profiling">
+                Profiling
               </Button>
             </div>
             <Menu
@@ -65,26 +71,15 @@ function App() {
               <MenuItem onClick={handleClose} component={Link} to="/">
                 Home
               </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={Link}
-                to="/profiling-rules"
-              >
-                Profiling Rules
-              </MenuItem>
-              <MenuItem onClick={handleClose} component={Link} to="/data">
-                Data
+              <MenuItem onClick={handleClose} component={Link} to="/profiling">
+                Profiling
               </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
         <Routes>
           <Route path="/" element={<HomeComponent />} />
-          <Route
-            path="/profiling-rules"
-            element={<ProfilingRulesComponent />}
-          />
-          <Route path="/data" element={<DataComponent />} />
+          <Route path="/profiling" element={<ProfilingRulesComponent />} />
           {/* Add other routes here */}
         </Routes>
       </div>
