@@ -44,8 +44,8 @@ def fix_mongo_query(query):
         response = openai.chat.completions.create(
             model=GROQ_MODEL,
             messages=[
-                {"role": "system", "content": "You are an expert in MongoDB. Fix the Mongo query for syntax errors given by the user. Especially focus on type checks. Give me ONLY the corrected query or the original query, if there are no errors. Do not put newline characters in the query."},
-                {"role": "user", "content": f"Check and fix this mongo query for syntax errors: {query}"}
+                {"role": "system", "content": "You are an expert in MongoDB. Fix the Mongo query for syntax errors given by the user. Especially focus on type checks and remember ne cannot be used to check type, not has to be used. Give me ONLY the corrected query or the original query, if there are no errors. Do not put newline characters in the query."},
+                {"role": "user", "content": f"Check and fix this mongo query for syntax errors and return me only the query and NO other text: {query}"}
             ],
             temperature=0
         )
@@ -64,7 +64,7 @@ def format_mongo_query(query):
             model=GROQ_MODEL,
             messages=[
                 {"role": "system", "content": "You are an expert in MongoDB and Python. Format the Mongo query so that the string can be converted to a dictionary in python, especially remember to enclose $<> operations in double quotes. Give me ONLY the formatted query. Do not put newline characters in the query or any extra text."},
-                {"role": "user", "content": f"Check and format this mongo query so it can be converted into a python dictionary: {query}"}
+                {"role": "user", "content": f"Check and format this mongo query so it can be converted into a python dictionary. give me only the dictionary and NO other text: {query}"}
             ],
             temperature=0
         )
@@ -102,4 +102,4 @@ def process_csv_and_generate_queries():
 if __name__ == "__main__":
     results = process_csv_and_generate_queries()
     # save_queries_to_json(results)
-    print(f"\nSaved queries top DB!!!")
+    print(f"\nSaved queries to DB!!!")
