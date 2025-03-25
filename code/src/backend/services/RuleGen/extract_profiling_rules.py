@@ -11,6 +11,8 @@ from pymongo import MongoClient
 from services.base_mongo_service import BaseMongoService  # Import BaseMongoService
 from io import BytesIO
 import re  # Import regex for sanitizing collection names
+from services.utils import get_available_api_key  
+
 
 # ========== 1. Load PDF and Extract Page-wise Text ==========
 def extract_text_by_page(pdf_path):
@@ -30,7 +32,7 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-
+    
     prompt = f"Extract data profiling rules from the following text for all variables / fields, make sure to only have 'variable : comma-separated rules' and no other extra text. Further where there are fixed values possible, mention that in the description :\n\n{page_text}"
 
     payload = {
@@ -57,19 +59,33 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
 # ========== 3. Save Rules to List of Dictionaries ==========
 def save_rules_to_list(rules):
     """
-    Convert rules into a list of dictionaries.
+    Convert rules into a list of dictionaries, combining rules and page numbers
+    if the fieldName already exists in the list.
+
     :param rules: List of tuples containing (rule, page_number).
     :return: List of dictionaries, each representing a field and its details.
     """
     rules_list = []
     for rule, page in rules:
         field_name, rule_description = rule.split(':', 1)
-        rules_list.append({
-            "fieldName": field_name.strip(),
-            "rule": rule_description.strip(),
-            "query": "",
-            "pageNumber": page
-        })
+        field_name = field_name.strip().replace(" ", "_").upper()
+        rule_description = rule_description.strip()
+
+        # Check if the fieldName already exists in the rules_list
+        existing_entry = next((entry for entry in rules_list if entry["fieldName"] == field_name), None)
+        if existing_entry:
+            # Append the new rule and page number to the existing entry
+            existing_entry["rule"] += f"; {rule_description}"
+            existing_entry["pageNumber"] = f"{existing_entry['pageNumber']}, {page}"
+        else:
+            # Add a new entry to the rules_list
+            rules_list.append({
+                "fieldName": field_name,
+                "rule": rule_description,
+                "query": "",
+                "pageNumber": str(page)
+            })
+    print(f'Extracted rules: {rules_list}')
     return rules_list
 
 # ========== 4. Main Pipeline Execution ==========
@@ -88,6 +104,8 @@ def extract_profiling_rules(pdf_name, schedule, category):
     try:
         # Initialize MongoDB client and collections
         mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
+        print(f'yooooo: {pdf_name}')
+        pdf_name = pdf_name+'.pdf'
         db = mongo_client["DataProfiling"]
         pdf_index_collection = db["PDF_Index"]
         raw_pdfs_collection = db["Raw_PDFs"]
@@ -130,7 +148,8 @@ def extract_profiling_rules(pdf_name, schedule, category):
                     page_texts[page_num + 1] = text  # Convert back to one-based index
 
         # Extract rules using Groq LLM API
-        api_key = os.getenv("GROQ_API_KEY")
+        # api_key = os.getenv("GROQ_API_KEY")
+        api_key = get_available_api_key()
         if not api_key:
             raise ValueError("GROQ_API_KEY environment variable is not set.")
         all_rules = []

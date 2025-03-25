@@ -5,9 +5,10 @@ import os
 import openai
 from pymongo import MongoClient
 from services.base_mongo_service import BaseMongoService
+from services.utils import get_available_api_key
 
 # CONFIG
-GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+GROQ_API_KEY = '' #get_available_api_key()
 GROQ_MODEL = "llama-3.3-70b-versatile"  # or use gemma-7b-it
 CSV_FILE_PATH = "audit_rules_groq.csv"
 CONSTRAINT_COLUMN = "Rule"
@@ -17,7 +18,7 @@ MONGO_URI = os.environ.get("MONGO_URI")
 DB_NAME = "DataProfiling"
 
 def get_mongo_query(field_name, constraint):
-    openai.api_key = GROQ_API_KEY
+    openai.api_key = get_available_api_key() # GROQ_API_KEY
     openai.base_url = "https://api.groq.com/openai/v1/"  # Important: override base_url for Groq
 
     try:
@@ -36,7 +37,7 @@ def get_mongo_query(field_name, constraint):
         return ""
     
 def fix_mongo_query(query):
-    openai.api_key = GROQ_API_KEY
+    openai.api_key = get_available_api_key() #GROQ_API_KEY
     openai.base_url = "https://api.groq.com/openai/v1/"  # Important: override base_url for Groq
 
     try:
@@ -55,7 +56,7 @@ def fix_mongo_query(query):
         return ""
     
 def format_mongo_query(query):
-    openai.api_key = GROQ_API_KEY
+    openai.api_key = get_available_api_key() #GROQ_API_KEY
     openai.base_url = "https://api.groq.com/openai/v1/"  # Important: override base_url for Groq
 
     try:

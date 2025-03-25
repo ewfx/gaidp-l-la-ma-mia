@@ -169,15 +169,35 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
             <div
               key={index}
               style={{
-                padding: "8px 12px",
-                borderRadius: "8px",
-                maxWidth: "60%",
-                alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                backgroundColor: msg.sender === "user" ? "#1D62FC" : "#343146",
-                color: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
+                gap: "8px",
+                marginBottom: "8px",
               }}
             >
-              {msg.text}
+              {msg.sender === "bot" && (
+                <img
+                  src="/llamamia_logo.png" // Path to the bot's profile icon
+                  alt="Bot"
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                  }}
+                />
+              )}
+              <div
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  maxWidth: "60%",
+                  backgroundColor: msg.sender === "user" ? "#1D62FC" : "#343146",
+                  color: "white",
+                }}
+              >
+                {msg.text}
+              </div>
             </div>
           ))}
         </CardContent>
