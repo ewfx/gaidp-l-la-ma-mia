@@ -1,49 +1,55 @@
-Rule,Page Number
-"SEGMENT_ID : unique identifier, 12-digit, based on segment ID positions and attribute codes",1
-"BHC_NAME : bank holding company name, text",1
-"RSSD_ID : RSSD ID number, numeric",1
-"REPORTING_MONTH : month of reporting, date format MM/YYYY",1
-"PORTFOLIO_ID : portfolio ID, fixed value ""Auto""",1
-"PRODUCT_TYPE : product type segment, fixed values ""01"", ""02"", ""03""",1
-"AGE : age segment, fixed values ""01"" to ""06""",1
-"ORIGINAL_LTV : original LTV segment, fixed values ""01"" to ""04""",1
-"ORIGINAL_CREDIT_SCORE : original industry standard credit score or equivalent segment, fixed values ""01"" to ""06""",1
-"GEOGRAPHY : geography segment, fixed values ""01"" to ""06""",1
-"DELINQUENCY_STATUS : delinquency status segment, fixed values ""01"" to ""05""",1
-"Product type : 01, 02, 03, categorical, discrete",2
-"Age : 01, 02, 03, 04, 05, 06, categorical, discrete, time-based",2
-"Original LTV : 01, 02, 03, 04, categorical, discrete, ratio-based, rounded",2
-"Original credit score : 00, 01, 02, 03, 04, 05, categorical, discrete, score-based",2
-"Geography : 01, 02, 03, 04, 05, categorical, discrete, location-based",2
-"Region : fixed values (Vermont, New Hampshire, Nebraska, South Dakota, North Dakota)",3
-"Delinquency status : fixed values (01 - Current + 1-29 DPD, 02 - 30-59 DPD, 03 - 60-89 DPD, 04 - 90-119 DPD, 05 - 120+ DPD)",3
-# Accounts : non-negative integer,3
-$ Outstandings : non-negative number,3
-# New accounts : non-negative integer,3
-$ New accounts : non-negative number,3
-"Interest rate : non-negative number, percentage",3
-$ Vehicle type car/van : non-negative number,3
-$ Vehicle type SUV/truck : non-negative number,3
-"Vehicle type : categorical, values=Sport/Luxury/Convertible, Unknown",4
-"Repossession : non-negative, currency",4
-"Current Month Repossession : non-negative, currency",4
-"Gross contractual charge-offs : non-negative, currency",4
-"Bankruptcy charge-offs : non-negative, currency",4
-"Recoveries : numeric, currency",4
-"Net charge-offs : numeric, currency",4
-"Adjustment factor : numeric, currency, optional",4
-"Ever 30DPD in the last 12 months : numeric, non-negative, currency",5
-"Ever 60DPD in the last 12 months : numeric, non-negative, currency",5
-"Projected value : numeric, non-negative, currency, applicable only for leased vehicles",5
-"Actual sale proceeds : numeric, non-negative, currency, applicable only for leased vehicles",5
-"Original term : categorical, values: <=48, 49-60, 61-72, >72 months",5
-"Origination channel : categorical, values: direct, non-direct",5
-"Loss mitigation : numeric, non-negative, currency, applicable only for accounts in loss mitigation programs",5
-"Joint application : numeric, non-negative, currency, applicable only for accounts with co-applicant",5
-"Probability of Default (PD) : numeric, between 0 and 1, applicable only for advanced approaches reporting banks",5
-"Loss Given Default (LGD) : numeric, between 0 and 1, applicable only for advanced approaches reporting banks",5
-"ELGD : numeric, non-negative, decimal values with maximum 1, possible fixed values: 0.9 for 90% loss, missing values reported as null",6
-"RWA : numeric, non-negative, aggregate dollar value, applicable only to advanced approaches banks, required for BHC or IHC or SLHC-owned loans",6
-"$ Unpaid Principal Balance at Charge-off : numeric, non-negative, total unpaid principal balance, excludes interest and fees",6
-"Percent Loss Severity (3 month Lagged) : numeric, non-negative, percentage value, calculated as total loss net of recoveries, lagged by 3 months",6
-"Weighted Average Life of Loans : numeric, non-negative, time to principal repayment in months, rounded to nearest monthly term, reflects current position and behavioral assumptions",6
+Field,Rule,Page Number
+SEGMENT_ID,"SEGMENT_ID : unique identifier, 12-digit, fixed format",1
+BHC_NAME,"BHC_NAME : string, required, not null",1
+RSSD_ID,"RSSD_ID : numeric, required, not null, fixed length",1
+REPORTING_MONTH,"REPORTING_MONTH : date, required, not null, format MM/YYYY",1
+PORTFOLIO_ID,"PORTFOLIO_ID : string, fixed value ""Auto""",1
+PRODUCT_TYPE,"PRODUCT_TYPE : categorical, 3 possible values (01, 02, 03)",1
+AGE,"AGE : categorical, 6 possible values (01, 02, 03, 04, 05, 06)",1
+ORIGINAL_LTV,"ORIGINAL_LTV : categorical, 4 possible values (01, 02, 03, 04)",1
+ORIGINAL_CREDIT_SCORE,"ORIGINAL_CREDIT_SCORE : categorical, 6 possible values (01, 02, 03, 04, 05, 06)",1
+GEOGRAPHY,"GEOGRAPHY : categorical, 6 possible values (01, 02, 03, 04, 05, 06)",1
+DELINQUENCY_STATUS,"DELINQUENCY_STATUS : categorical, 5 possible values (01, 02, 03, 04, 05)",1
+LOAN_AMOUNT,"LOAN_AMOUNT : numeric, in millions, non-negative",1
+LEASE_AMOUNT,"LEASE_AMOUNT : numeric, in millions, non-negative",1
+REPOSESSED_LOAN_AMOUNT,"REPOSESSED_LOAN_AMOUNT : numeric, in millions, non-negative",1
+SECURITIZED_LOAN_AMOUNT,"SECURITIZED_LOAN_AMOUNT : numeric, in millions, non-negative",1
+NON_SECURITIZED_LOAN_AMOUNT,"NON_SECURITIZED_LOAN_AMOUNT : numeric, in millions, non-negative",1
+ACCOUNT_WEIGHTED_AVERAGE,"ACCOUNT_WEIGHTED_AVERAGE : numeric, calculated field, non-negative",1
+Product type,"Product type : categorical, values = 01, 02, 03, description = New auto loans, Used auto loans, Auto leases",2
+Age,"Age : categorical, values = 01, 02, 03, 04, 05, 06, description = time since loan origination, ranges = 5 years <= Age, 4 years <= Age < 5 years, 3 years <= Age < 4 years, 2 years <= Age < 3 years, 1 year <= Age < 2 years, Age < 1 year",2
+Original LTV,"Original LTV : categorical, values = 01, 02, 03, 04, description = loan to value ratio at origination, ranges = <= 90, 91-120, > 120, N/A",2
+Original credit score,"Original credit score : categorical, values = 00, 01, 02, 03, 04, 05, description = credit score of borrower at origination, ranges = <=560, >560 and <= 620, > 620 and <= 660, > 660 and <= 720, > 720, N/A",2
+Geography,"Geography : categorical, values = 01, 02, 03, 04, 05, description = primary borrower's current place of residence, regions = California, Nevada, Florida, Arizona, Rhode Island, South Carolina, Oregon, Michigan, Indiana, Kentucky, Georgia, Ohio, Illinois, Washington D.C., Mississippi, North Carolina, New Jersey, Tennessee, Missouri, West Virginia, Connecticut, Idaho, Pennsylvania, Washington, Alabama, Delaware, Massachusetts, New York, Colorado, New Mexico, Texas, Alaska, Louisiana, Wisconsin, Arkansas, Maine, Maryland, Utah, Montana, Minnesota, Oklahoma, Iowa, Virginia, Wyoming, Kansas, Hawaii",2
+Region,"Region : fixed values (Vermont, New Hampshire, Nebraska, South Dakota, North Dakota), categorical",3
+Delinquency status,"Delinquency status : fixed values (01 - Current + 1-29 DPD, 02 - 30-59 DPD, 03 - 60-89 DPD, 04 - 90-119 DPD, 05 - 120+ DPD), categorical",3
+# Accounts,# Accounts : non-negative integer,3
+$ Outstandings,$ Outstandings : non-negative numeric,3
+# New accounts,# New accounts : non-negative integer,3
+$ New accounts,$ New accounts : non-negative numeric,3
+Interest rate,"Interest rate : non-negative numeric, percentage",3
+$ Vehicle type car/van,$ Vehicle type car/van : non-negative numeric,3
+$ Vehicle type SUV/truck,$ Vehicle type SUV/truck : non-negative numeric,3
+Vehicle type,"Vehicle type : categorical, values=Sport/Luxury/Convertible, Unknown",4
+Repossession,"Repossession : monetary, non-negative",4
+Current Month Repossession,"Current Month Repossession : monetary, non-negative",4
+Gross contractual charge-offs,"Gross contractual charge-offs : monetary, non-negative",4
+Bankruptcy charge-offs,"Bankruptcy charge-offs : monetary, non-negative",4
+Recoveries,"Recoveries : monetary, can be negative",4
+Net charge-offs,"Net charge-offs : monetary, can be negative",4
+Adjustment factor,"Adjustment factor : monetary, can be negative, optional, conditional",4
+Ever 30DPD in the last 12 months,"Ever 30DPD in the last 12 months : numeric, non-negative, past due amount",5
+Ever 60DPD in the last 12 months,"Ever 60DPD in the last 12 months : numeric, non-negative, past due amount",5
+Projected value,"Projected value : numeric, non-negative, applicable only for leased vehicles",5
+Actual sale proceeds,"Actual sale proceeds : numeric, non-negative, applicable only for leased vehicles",5
+Original term,"Original term : categorical, values = <=48, 49-60, 61-72, >72 months",5
+Origination channel,"Origination channel : categorical, values = direct, non-direct",5
+Loss mitigation,"Loss mitigation : numeric, non-negative, applicable only for accounts in loss mitigation program",5
+Joint application,"Joint application : numeric, non-negative, applicable only for accounts with co-applicant",5
+Probability of Default (PD),"Probability of Default (PD) : numeric, between 0 and 1, applicable only for advanced approaches reporting banks",5
+Loss Given Default (LGD),"Loss Given Default (LGD) : numeric, between 0 and 1, applicable only for advanced approaches reporting banks",5
+ELGD,"ELGD : numeric, non-negative, less than or equal to 1, may be null, example values: 0.9",6
+RWA,"RWA : numeric, non-negative, applicable only to advanced approaches banks, required for BHC or IHC or SLHC-owned loans",6
+$ Unpaid Principal Balance at Charge-off,"$ Unpaid Principal Balance at Charge-off : numeric, non-negative, excludes interest and fees",6
+Percent Loss Severity (3 month Lagged),"Percent Loss Severity (3 month Lagged) : numeric, non-negative, less than or equal to 1, example values: 0.5",6
+Weighted Average Life of Loans,"Weighted Average Life of Loans : numeric, non-negative, rounded to the nearest monthly term, example values: 12, 24, 36",6

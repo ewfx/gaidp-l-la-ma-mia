@@ -1,0 +1,242 @@
+[
+  {
+    "fieldName": "SEGMENT_ID",
+    "rule": "unique identifier, 12-digit, fixed format",
+    "mongo_query": "db.collection.find({$or:[{\"SEGMENT_ID\":{$exists:false}},{\"SEGMENT_ID\":{$type:{\"$ne\":\"string\"}}},{\"SEGMENT_ID\":{$not:{$regex:\"^\\\\d{12}$\"}}}]})"
+  },
+  {
+    "fieldName": "BHC_NAME",
+    "rule": "company name, text",
+    "mongo_query": "db.collection.find({$or:[{\"BHC_NAME\":null},{\"BHC_NAME\":{$type:{\"$ne\":\"string\"}}}]})"
+  },
+  {
+    "fieldName": "RSSD_ID",
+    "rule": "identification number, numeric",
+    "mongo_query": "db.collection.find({$or:[{\"RSSD_ID\":{$exists:false}},{\"RSSD_ID\":{$not:{$type:\"number\"}}},{\"RSSD_ID\":null}]})"
+  },
+  {
+    "fieldName": "REPORTING_MONTH",
+    "rule": "month of report, date, fixed format",
+    "mongo_query": "db.collection.find({$or:[{\"REPORTING_MONTH\":{$type:\"string\"}},{\"REPORTING_MONTH\":{$not:/^\\d{4}-\\d{2}$/}}]})"
+  },
+  {
+    "fieldName": "PORTFOLIO_ID",
+    "rule": "portfolio identifier, text, fixed value \"Auto\"",
+    "mongo_query": "db.collection.find({$or:[{\"PORTFOLIO_ID\":{$ne:\"Auto\"}},{\"PORTFOLIO_ID\":{$type:{$ne:\"string\"}}}]})"
+  },
+  {
+    "fieldName": "PRODUCT_TYPE",
+    "rule": "product type, categorical, fixed values \"01\", \"02\", \"03\"",
+    "mongo_query": "db.collection.find({$or:[{\"PRODUCT_TYPE\":{$not:{$in:[\"01\",\"02\",\"03\"]}}},{\"PRODUCT_TYPE\":{$type:{$ne:\"string\"}}}]})"
+  },
+  {
+    "fieldName": "AGE",
+    "rule": "age of loan, categorical, fixed values \"01\", \"02\", \"03\", \"04\", \"05\", \"06\"",
+    "mongo_query": "db.collection.find({AGE: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\"]}}})"
+  },
+  {
+    "fieldName": "ORIGINAL_LTV",
+    "rule": "original loan-to-value, categorical, fixed values \"01\", \"02\", \"03\", \"04\"",
+    "mongo_query": "db.collection.find({$or:[{\"ORIGINAL_LTV\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\"]}}},{\"ORIGINAL_LTV\":{$type:{$ne:\"string\"}}}]})"
+  },
+  {
+    "fieldName": "ORIGINAL_CREDIT_SCORE",
+    "rule": "original credit score, categorical, fixed values \"01\", \"02\", \"03\", \"04\", \"05\", \"06\"",
+    "mongo_query": "db.collection.find({$or:[{\"ORIGINAL_CREDIT_SCORE\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\",\"05\",\"06\"]}}},{\"ORIGINAL_CREDIT_SCORE\":{$type:{$ne:\"string\"}}}]});"
+  },
+  {
+    "fieldName": "GEOGRAPHY",
+    "rule": "geography, categorical, fixed values \"01\", \"02\", \"03\", \"04\", \"05\", \"06\"",
+    "mongo_query": "db.collection.find({$or:[{\"GEOGRAPHY\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\",\"05\",\"06\"]}}},{\"GEOGRAPHY\":{$type:{$ne:\"string\"}}}]});"
+  },
+  {
+    "fieldName": "DELINQUENCY_STATUS",
+    "rule": "delinquency status, categorical, fixed values \"01\", \"02\", \"03\", \"04\", \"05\"",
+    "mongo_query": "db.collection.find({$or:[{\"DELINQUENCY_STATUS\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\",\"05\"]}}},{\"DELINQUENCY_STATUS\":{$type:{$ne:\"string\"}}}]})"
+  },
+  {
+    "fieldName": "Product type",
+    "rule": "categorical, values = 01, 02, 03, description = New auto loans, Used auto loans, Auto leases",
+    "mongo_query": "db.collection.find({$or:[{\"Product type\":{$not:{$in:[\"01\",\"02\",\"03\"]}}},{\"Product type\":\"01\",\"description\":{$ne:\"New auto loans\"}},{\"Product type\":\"02\",\"description\":{$ne:\"Used auto loans\"}},{\"Product type\":\"03\",\"description\":{$ne:\"Auto leases\"}}]})"
+  },
+  {
+    "fieldName": "Age",
+    "rule": "categorical, values = 01, 02, 03, 04, 05, 06, description = time since loan origination, ranges = 5 years <= Age, 4 years <= Age < 5 years, 3 years <= Age < 4 years, 2 years <= Age < 3 years, 1 year <= Age < 2 years, Age < 1 year",
+    "mongo_query": "db.collection.find({$or:[{\"Age\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\",\"05\",\"06\"]}}},{\"Age\":{$type:\"string\"}}]})"
+  },
+  {
+    "fieldName": "Original LTV",
+    "rule": "categorical, values = 01, 02, 03, 04, description = loan to value ratio at origination, ranges = <= 90, 91-120, > 120, N/A",
+    "mongo_query": "db.collection.find({$or:[{\"Original LTV\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\"]}}},{\"Original LTV\":{$type:\"string\"}},{$and:[{\"Original LTV\":\"01\"},{$gt:90}]},{$and:[{\"Original LTV\":\"02\"},{$lt:91}]},{$and:[{\"Original LTV\":\"02\"},{$gt:120}]},{$and:[{\"Original LTV\":\"03\"},{$lt:91}]},{$and:[{\"Original LTV\":\"03\"},{$gt:120}]},{$and:[{\"Original LTV\":\"04\"},{$lt:90}]},{$and:[{\"Original LTV\":\"04\"},{$gt:120}]}]})"
+  },
+  {
+    "fieldName": "Original credit score",
+    "rule": "categorical, values = 00, 01, 02, 03, 04, 05, description = credit score of borrower at origination, ranges = <=560, >560 and <= 620, > 620 and <= 660, > 660 and <= 720, > 720, N/A",
+    "mongo_query": "db.collection.find({$or:[{\"Original credit score\":{$not:{$in:[ \"00\", \"01\", \"02\", \"03\", \"04\", \"05\", \"N/A\"]}}},{\"Original credit score\":{$in:[ \"00\", \"01\", \"02\", \"03\", \"04\", \"05\"]},$nor:[{\"Original credit score\":\"00\"},{$and:[{\"Original credit score\":\"01\"},{\"$or\":[{\"Original credit score\":{$gte:560}},{\"Original credit score\":{$lte:620}}]}]},{\"Original credit score\":\"02\"},{$and:[{\"Original credit score\":\"03\"},{\"$or\":[{\"Original credit score\":{$gt:620}},{\"Original credit score\":{$lte:660}}]}]},{\"Original credit score\":\"04\"},{$and:[{\"Original credit score\":\"05\"},{\"$or\":[{\"Original credit score\":{$gt:660}},{\"Original credit score\":{$lte:720}}]}]}]})"
+  },
+  {
+    "fieldName": "Geography",
+    "rule": "categorical, values = 01, 02, 03, 04, 05, description = primary borrower's current place of residence, regions = California, Nevada, Florida, Arizona, Rhode Island, South Carolina, Oregon, Michigan, Indiana, Kentucky, Georgia, Ohio, Illinois, Washington D.C., Mississippi, North Carolina, New Jersey, Tennessee, Missouri, West Virginia, Connecticut, Idaho, Pennsylvania, Washington, Alabama, Delaware, Massachusetts, New York, Colorado, New Mexico, Texas, Alaska, Louisiana, Wisconsin, Arkansas, Maine, Maryland, Utah, Montana, Minnesota, Oklahoma, Iowa, Virginia, Wyoming, Kansas, Hawaii",
+    "mongo_query": "db.collection.find({Geography: {$not: {$in: [\"01\", \"02\", \"03\", \"04\", \"05\"]}}})"
+  },
+  {
+    "fieldName": "Region",
+    "rule": "fixed values (Vermont, New Hampshire, Nebraska, South Dakota, North Dakota), categorical",
+    "mongo_query": "db.collection.find({ Region: { $not: { $in: [\"Vermont\", \"New Hampshire\", \"Nebraska\", \"South Dakota\", \"North Dakota\"] } } })"
+  },
+  {
+    "fieldName": "Delinquency status",
+    "rule": "fixed values (01 - Current + 1-29 DPD, 02 - 30-59 DPD, 03 - 60-89 DPD, 04 - 90-119 DPD, 05 - 120+ DPD), categorical",
+    "mongo_query": "db.collection.find({$or:[{\"Delinquency status\":{$not:{$in:[\"01\",\"02\",\"03\",\"04\",\"05\"]}}},{\"Delinquency status\":{$type:{$ne:\"string\"}}}]});"
+  },
+  {
+    "fieldName": "# Accounts",
+    "rule": "numeric, non-negative, total number of accounts",
+    "mongo_query": "db.collection.find({$or:[{\"Accounts\":{$not:{$type:\"number\"}}},{\"Accounts\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "$ Outstandings",
+    "rule": "numeric, non-negative, total unpaid principal balance",
+    "mongo_query": "db.collection.find({$or:[{\"Outstandings\":{$exists:false}},{\"Outstandings\":{$type:\"string\"}},{\"Outstandings\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "# New accounts",
+    "rule": "numeric, non-negative, total number of new accounts",
+    "mongo_query": "db.collection.find({$or:[{\"# New accounts\":{$exists:false}},{\"# New accounts\":{$not:{$type:\"number\"}}},{\"# New accounts\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "$ New accounts",
+    "rule": "numeric, non-negative, total dollar amount of new accounts",
+    "mongo_query": "db.collection.find({$or:[{\"New accounts\":{$not:{$type:\"number\"}}},{\"New accounts\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "Interest rate",
+    "rule": "numeric, percentage, average annual percentage rate",
+    "mongo_query": "db.collection.find({$or:[{\"Interest rate\":{$not:{$type:\"number\"}}},{\"Interest rate\":{$lt:0}},{\"Interest rate\":{$gt:100}}]})"
+  },
+  {
+    "fieldName": "$ Vehicle type car/van",
+    "rule": "numeric, non-negative, unpaid principal balance for car/van",
+    "mongo_query": "db.collection.find({$or:[{\"Vehicle type car/van\":{$not:{$type:\"number\"}}},{\"Vehicle type car/van\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "$ Vehicle type SUV/truck",
+    "rule": "numeric, non-negative, unpaid principal balance for SUV/truck",
+    "mongo_query": "db.collection.find({$or:[{\"Vehicle type SUV/truck\":{$not:{$type:\"number\"}}},{\"Vehicle type SUV/truck\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "Vehicle type",
+    "rule": "categorical, values=sport/luxury/convertible,unknown",
+    "mongo_query": "db.collection.find({$or:[{\"Vehicle type\":{$not:{$in:[\"sport\",\"luxury\",\"convertible\",\"unknown\"]}}},{\"Vehicle type\":{$type:{$ne:\"string\"}}}]});"
+  },
+  {
+    "fieldName": "Repossession",
+    "rule": "monetary, non-negative",
+    "mongo_query": "db.collection.find({ $or: [ { Repossession: { $exists: false } }, { Repossession: null }, { Repossession: { $not: { $type: \"double\" } } }, { Repossession: { $lt: 0 } } ] })"
+  },
+  {
+    "fieldName": "Current Month Repossession",
+    "rule": "monetary, non-negative",
+    "mongo_query": "db.collection.find({$or:[{\"Current Month Repossession\":{$exists:false}},{\"Current Month Repossession\":{$not:{$type:\"double\"}}},{\"Current Month Repossession\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "Gross contractual charge-offs",
+    "rule": "monetary, non-negative, fixed values=0",
+    "mongo_query": "db.collection.find({$or:[{\"Gross contractual charge-offs\":{$exists:false}},{\"Gross contractual charge-offs\":{$type:{$ne:\"number\"}}},{\"Gross contractual charge-offs\":{$lt:0}},{\"Gross contractual charge-offs\":{$ne:0}}]})"
+  },
+  {
+    "fieldName": "Bankruptcy charge-offs",
+    "rule": "monetary, non-negative, fixed values=0",
+    "mongo_query": "db.collection.find({$or:[{\"Bankruptcy charge-offs\":{$exists:false}},{\"Bankruptcy charge-offs\":{$not:{$type:\"number\"}}},{\"Bankruptcy charge-offs\":{$lt:0}},{\"Bankruptcy charge-offs\":{$ne:0}}]})"
+  },
+  {
+    "fieldName": "Recoveries",
+    "rule": "monetary",
+    "mongo_query": "db.collection.find({$or:[{\"Recoveries\":{$not:{$type:\"double\"}}},{\"Recoveries\":null}]})"
+  },
+  {
+    "fieldName": "Net charge-offs",
+    "rule": "monetary",
+    "mongo_query": "db.collection.find({$or:[{\"Net charge-offs\":{$exists:false}},{\"Net charge-offs\":{$type:{$ne:\"double\"}}}]})"
+  },
+  {
+    "fieldName": "Adjustment factor",
+    "rule": "monetary, optional, fixed values=0",
+    "mongo_query": "db.collection.find({$or:[{\"Adjustment factor\":{$exists:false}},{\"Adjustment factor\":{$not:{$eq:0}}},{\"Adjustment factor\":{$not:{$type:\"double\"}}}]})"
+  },
+  {
+    "fieldName": "Ever 30DPD in the last 12 months",
+    "rule": "numeric, non-negative, currency",
+    "mongo_query": "db.collection.find({$or:[{\"Ever 30DPD in the last 12 months\":{$exists:false}},{\"Ever 30DPD in the last 12 months\":{$type:{$not:\"number\"}}},{\"Ever 30DPD in the last 12 months\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "Ever 60DPD in the last 12 months",
+    "rule": "numeric, non-negative, currency",
+    "mongo_query": "db.collection.find({$or:[{\"Ever 60DPD in the last 12 months\":{$not:{$type:\"double\"}}},{\"Ever 60DPD in the last 12 months\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "Projected value",
+    "rule": "numeric, non-negative, currency, applicable only for leased vehicles",
+    "mongo_query": "db.collection.find({$or:[{\"Projected value\":{$exists:false}},{\"Projected value\":{$not:{$type:\"number\"}}},{\"Projected value\":{$lt:0}},{\"Type\":\"owned\"}]});"
+  },
+  {
+    "fieldName": "Actual sale proceeds",
+    "rule": "numeric, non-negative, currency, applicable only for leased vehicles",
+    "mongo_query": "db.collection.find({$or:[{\"Actual sale proceeds\":{$exists:false}},{\"Actual sale proceeds\":{$not:{$type:\"number\"}}},{\"Actual sale proceeds\":{$lt:0}},{\"Actual sale proceeds\":{$not:{$regex:/^\\d{1,3}(,\\d{3})*(\\.\\d+)?$/}}}]});"
+  },
+  {
+    "fieldName": "Original term",
+    "rule": "categorical, values: <=48, 49-60, 61-72, >72 months",
+    "mongo_query": "db.collection.find({$or:[{\"Original term\":{$not:{$in:[null, \"\", \"<=48\", \"49-60\", \"61-72\", \">72\"]}}}, {\"Original term\":{$type:{$ne:\"string\"}}}]})"
+  },
+  {
+    "fieldName": "Origination channel",
+    "rule": "categorical, values: direct, non-direct",
+    "mongo_query": "db.collection.find({$or:[{\"Origination channel\":{$exists:false}},{\"Origination channel\":{$not:{$in:[\"direct\",\"non-direct\"]}}}]})"
+  },
+  {
+    "fieldName": "Loss mitigation",
+    "rule": "numeric, non-negative, currency, applicable only for accounts in loss mitigation programs",
+    "mongo_query": "db.collection.find({$or:[{\"Loss mitigation\":{$not:{$type:\"number\"}}},{\"Loss mitigation\":{$lt:0}},{\"Loss mitigation\":{$not:{$regex:/^\\d{1,3}(,\\d{3})*(\\.\\d+)?$/}}}]})"
+  },
+  {
+    "fieldName": "Joint application",
+    "rule": "numeric, non-negative, currency, applicable only for accounts with co-applicant",
+    "mongo_query": "db.collection.find({$or:[{\"Joint application\":{$exists:false}},{\"Joint application\":{$not:{$type:\"double\"}}},{\"Joint application\":{$lt:0}},{\"Co-applicant\":{$exists:false}}]})"
+  },
+  {
+    "fieldName": "Probability of Default (PD)",
+    "rule": "numeric, between 0 and 1, applicable only for advanced approaches reporting banks",
+    "mongo_query": "db.collection.find({$or:[{\"Probability of Default (PD)\":{$exists:false}},{\"Probability of Default (PD)\":{$not:{$type:\"number\"}}},{\"Probability of Default (PD)\":{$lt:0}},{\"Probability of Default (PD)\":{$gt:1}}]})"
+  },
+  {
+    "fieldName": "Loss Given Default (LGD)",
+    "rule": "numeric, between 0 and 1, applicable only for advanced approaches reporting banks",
+    "mongo_query": "db.collection.find({$or:[{\"Loss Given Default (LGD)\":{$exists:false}},{\"Loss Given Default (LGD)\":{$not:{$type:\"number\"}}},{\"Loss Given Default (LGD)\":{$lt:0}},{\"Loss Given Default (LGD)\":{$gt:1}}]})"
+  },
+  {
+    "fieldName": "ELGD",
+    "rule": "numeric, non-negative, decimal values possible, missing values reported as null, fixed values possible (e.g. 0.9 for 90% expected loss)",
+    "mongo_query": "db.collection.find({ $or: [ { ELGD: { $type: { $not: \"double\" } } }, { ELGD: { $lt: 0 } }, { ELGD: null } ] })"
+  },
+  {
+    "fieldName": "RWA",
+    "rule": "numeric, non-negative, aggregate dollar value, applicable only to advanced approaches banks, required for BHC or IHC or SLHC-owned loans",
+    "mongo_query": "db.collection.find({$or:[{\"RWA\":{$not:{$type:\"number\"}}},{\"RWA\":{$lt:0}},{\"RWA\":null}]})"
+  },
+  {
+    "fieldName": "$ Unpaid Principal Balance at Charge-off",
+    "rule": "numeric, non-negative, total unpaid principal balance, excludes interest and fees",
+    "mongo_query": "db.collection.find({$or:[{\"$ Unpaid Principal Balance at Charge-off\":{$exists:false}},{\"$ Unpaid Principal Balance at Charge-off\":{$type:{$ne:\"number\"}}},{\"$ Unpaid Principal Balance at Charge-off\":{$lt:0}}]})"
+  },
+  {
+    "fieldName": "Percent Loss Severity (3 month Lagged)",
+    "rule": "numeric, non-negative, percentage value, calculated as total loss net of recoveries, lagged by 3 months",
+    "mongo_query": "db.collection.find({$or:[{\"Percent Loss Severity (3 month Lagged)\":{\"$exists\":false}},{\"Percent Loss Severity (3 month Lagged)\":{\"$type\":{\"$ne\":\"number\"}}},{\"Percent Loss Severity (3 month Lagged)\":{\"$lt\":0}},{\"Percent Loss Severity (3 month Lagged)\":{\"$gt\":100}}]})"
+  },
+  {
+    "fieldName": "Weighted Average Life of Loans",
+    "rule": "numeric, non-negative, time to principal repayment, rounded to nearest monthly term, reflects current position and behavioral assumptions",
+    "mongo_query": "db.collection.find({$or:[{\"Weighted Average Life of Loans\":{$not:{$type:\"number\"}}},{\"Weighted Average Life of Loans\":{$lt:0}}]})"
+  }
+]
