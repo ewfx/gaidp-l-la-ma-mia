@@ -151,6 +151,8 @@ def extract_profiling_rules(pdf_name, schedule, category):
         mongo_service = BaseMongoService(mongo_client, collection_name)
         mongo_service.create_many(rules_list)
 
+        return collection_name
+
     except Exception as e:
         raise ValueError(f"Failed to extract profiling rules: {str(e)}")
 

@@ -113,3 +113,9 @@ class BaseMongoService:
         except Exception as e:
             print(f"Error executing Mongo CLI query: {e}")
             return []
+
+    def collection_exists(self) -> bool:
+        """
+        Check if the collection exists in the database.
+        """
+        return self.collection.name in self.collection.database.list_collection_names()

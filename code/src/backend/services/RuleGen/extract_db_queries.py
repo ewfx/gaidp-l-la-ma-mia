@@ -15,9 +15,8 @@ CONSTRAINT_COLUMN = "Rule"
 # MongoDB Configuration
 MONGO_URI = os.environ.get("MONGO_URI")
 DB_NAME = "DataProfiling"
-COLLECTION_NAME = "Test_Rules"
 
-def get_mongo_query_using_openai(field_name, constraint):
+def get_mongo_query(field_name, constraint):
     openai.api_key = GROQ_API_KEY
     openai.base_url = "https://api.groq.com/openai/v1/"  # Important: override base_url for Groq
 
@@ -75,16 +74,16 @@ def format_mongo_query(query):
         return ""
 
 # Updated function to fetch constraints from the database
-def process_csv_and_generate_queries():
+def process_rules_and_generate_queries(collection_name):
     client = MongoClient(MONGO_URI)
     db = client[DB_NAME]
-    base_mongo_service = BaseMongoService(client, COLLECTION_NAME, DB_NAME)
+    base_mongo_service = BaseMongoService(client, collection_name, DB_NAME)
 
     try:
         for document in base_mongo_service.get_all():
             field_name = document.get("fieldName")
             rule = document.get("rule")
-            mongo_query = get_mongo_query_using_openai(field_name, rule)
+            mongo_query = get_mongo_query(field_name, rule)
             print(mongo_query)
             fixed_mongo_query = fix_mongo_query(mongo_query)
             print(fixed_mongo_query)
@@ -96,10 +95,6 @@ def process_csv_and_generate_queries():
                 document_id=str(document["_id"]),
                 updated_data={"query": formatted_mongo_query}
             )
+        print(f"\nSaved queries to DB!!!") 
     finally:
         client.close()
-
-if __name__ == "__main__":
-    results = process_csv_and_generate_queries()
-    # save_queries_to_json(results)
-    print(f"\nSaved queries to DB!!!")
