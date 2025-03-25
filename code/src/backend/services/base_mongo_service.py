@@ -119,3 +119,15 @@ class BaseMongoService:
         Check if the collection exists in the database.
         """
         return self.collection.name in self.collection.database.list_collection_names()
+
+    def find_one(self, query):
+        """
+        Fetches a single document from the collection based on the query.
+
+        Args:
+            query (dict): The query to filter the document.
+
+        Returns:
+            dict: The document if found, otherwise None.
+        """
+        return self.collection.find_one(query)

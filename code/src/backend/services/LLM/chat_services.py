@@ -1,6 +1,9 @@
+import json
 import re
 import requests
 import os 
+from pymongo import MongoClient
+from services.base_mongo_service import BaseMongoService
 
 def extract_word_after_hash(input_string):
     """
@@ -15,43 +18,41 @@ def extract_word_after_hash(input_string):
     match = re.search(r"#(\w+)", input_string)
     return match.group(1) if match else None
 
-def update_rules(update_condition, api_key=os.environ.get('GROQ_API_KEY'), model='llama-3.3-70b-versatile'):
+def update_rules(update_condition, pdfName, schedule, category, api_key=os.environ.get('GROQ_API_KEY'), model='llama-3.3-70b-versatile'):
     """
     Updates the rules in the database with the given rule.
 
     Args:
-        rule (dict): {constraint: str, mongo_query: str}
+        update_condition (str): The condition to modify the rule.
+        pdfName (str): The name of the PDF.
+        schedule (str): The schedule name.
+        category (str): The category name.
     """
-    
-
     field = extract_word_after_hash(update_condition)
     if field is None:
-        return Exception("No field provided in the update condition.")
+        raise Exception("No field provided in the update condition.")
     
-    # get rule from DB TODO but for now read json
-    import json
-    json_file_path = '/Users/parthshukla/Documents/_working_space/gaidp-l-la-ma-mia/code/src/backend/poc/mongo_queries_output.json'
-    try:
-        with open(json_file_path, 'r') as file:
-            json_data = json.load(file)
-    except FileNotFoundError:
-        raise Exception(f"JSON file not found at path: {json_file_path}")
-    except json.JSONDecodeError:
-        raise Exception("Error decoding JSON file.")
+    # Remove the .pdf extension from pdfName
+    sanitized_pdf_name = re.sub(r'\.pdf$', '', pdfName, flags=re.IGNORECASE)
 
-    data = {}
-    for rule in json_data:
-        if field.upper() in rule['constraint'].upper():
-            data = rule
-            break
-    if not data:
-        return Exception("No rule found for the given field.")
+    # Generate the sanitized collection name
+    collection_name = f"{sanitized_pdf_name}_{schedule}_{category}"
+    collection_name = re.sub(r'[^a-zA-Z0-9_]', '', collection_name)  # Keep only alphanumeric characters and underscores
+
+    # Fetch the rule and query from the database
+    mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
+    mongo_service = BaseMongoService(mongo_client, collection_name)
+    rule_data = mongo_service.find_one({"fieldName": field})
+
+    if not rule_data:
+        raise Exception("No rule found for the given field.")
+    
     print('------------')
-    print(data)
+    print(rule_data)
     print('------------')
     
     if not api_key:
-        return Exception("No Groq API key found.")
+        raise Exception("No Groq API key found.")
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -62,7 +63,7 @@ def update_rules(update_condition, api_key=os.environ.get('GROQ_API_KEY'), model
         "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f'Following is the existing rule: {data} User wants to: {update_condition.replace("#", "")}'}
+            {"role": "user", "content": f'Following is the existing rule: {rule_data} User wants to: {update_condition.replace("#", "")}. Make sure to give the mongo query in a python dictionary like format. Dont add any escape sequnces.'}
         ],
         "temperature": 0.8,
         "max_tokens": 1000
@@ -86,6 +87,6 @@ def update_rules(update_condition, api_key=os.environ.get('GROQ_API_KEY'), model
         print(f"Error from Groq API while updating rule:", response.text)
         return {}
     
-if __name__=='__main__':
-    print('Modify #Segment_id to accept 13 digit numbers as well')
-    update_rules('Modify #Segment_id to accept 13 digit numbers as well')
+# if __name__=='__main__':
+#     print('Modify #SEGMENT_ID to accept 13 digit numbers as well')
+#     update_rules('Modify #Segment_id to accept 13 digit numbers as well')
