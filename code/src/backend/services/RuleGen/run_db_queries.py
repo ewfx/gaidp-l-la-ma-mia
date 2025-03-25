@@ -1,8 +1,9 @@
 from pymongo import MongoClient
+import os
 from services.base_mongo_service import BaseMongoService
 
 # MongoDB Configuration
-MONGO_URI = "mongodb+srv://agastya:Z3jVqmynjUQk5E7d@cluster0.wbyds.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_URI = os.environ.get("MONGO_URI")
 DB_NAME = "DataProfiling"
 COLLECTION_NAME = "Test_Rules"
 TARGET_COLLECTION = "PDFName_ScheduleA_USAutoLoan_Data"

@@ -13,7 +13,7 @@ CSV_FILE_PATH = "audit_rules_groq.csv"
 CONSTRAINT_COLUMN = "Rule"
 
 # MongoDB Configuration
-MONGO_URI = "mongodb+srv://agastya:Z3jVqmynjUQk5E7d@cluster0.wbyds.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_URI = os.environ.get("MONGO_URI")
 DB_NAME = "DataProfiling"
 COLLECTION_NAME = "Test_Rules"
 
