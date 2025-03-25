@@ -11,6 +11,7 @@ function ProfilingRulesComponent() {
   const [selectedPdf, setSelectedPdf] = useState(""); // Default value for selectedPdf
   const [selectedSchedule, setSelectedSchedule] = useState(""); // Default value for selectedSchedule
   const [selectedCategory, setSelectedCategory] = useState(""); // Default value for selectedSection
+  const [dataCollectionName, setDataCollectionName] = useState();
   const [violations, setViolations] = useState( );
   const [profilingRuleData, setProfilingRuleData] = useState();
   const [csvFile, setCsvFile] = useState(null); // State to store the selected CSV file
@@ -110,6 +111,7 @@ function ProfilingRulesComponent() {
       });
       if(response.data.isSuccess) {
         console.log("CSV upload response:", response.data);
+        setDataCollectionName(response.data.data.collection_name);
         fetchViolations(selectedPdf, selectedSchedule, selectedCategory, response.data.data.collection_name);
       }
 
@@ -223,7 +225,15 @@ function ProfilingRulesComponent() {
           overflow: "auto", // Ensure scrolling is handled here if needed
         }}
       >
-        <ChatComponent />
+        <ChatComponent 
+          pdfName={selectedPdf} 
+          schedule={selectedSchedule}
+          category={selectedCategory}
+          fetchProfilingRules={fetchProfilingRules} 
+          dataCollectionName={dataCollectionName}
+          fetchViolations={fetchViolations}
+          profilingRuleData={profilingRuleData}
+        />
       </div>
 
       {/* Snackbar for upload notifications */}
