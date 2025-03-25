@@ -50,6 +50,11 @@ async def upload_csv(file: UploadFile = File(...), pdfName: str = None, schedule
         # Add a row_number column to the DataFrame
         df["row_number"] = range(1, len(df) + 1)
 
+        # Convert fields with "id" in their name to string
+        for col in df.columns:
+            if "id" in col.lower():
+                df[col] = df[col].astype(str)
+
         # Remove the .pdf extension from pdfName
         sanitized_pdf_name = re.sub(r'\.pdf$', '', pdfName, flags=re.IGNORECASE)
 
@@ -280,6 +285,8 @@ async def get_violations(pdfName: str = None, schedule: str = None, category: st
 
         # Convert violations dictionary to a list
         violations_list = list(violations.values())
+        # Sort violations by row_number
+        violations_list.sort(key=lambda x: x["row_number"])
         print(len(violations_list))
 
     except Exception as e:
