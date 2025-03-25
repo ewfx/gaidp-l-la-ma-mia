@@ -11,6 +11,8 @@ from pymongo import MongoClient
 from services.base_mongo_service import BaseMongoService  # Import BaseMongoService
 from io import BytesIO
 import re  # Import regex for sanitizing collection names
+from services.utils import get_available_api_key  
+
 
 # ========== 1. Load PDF and Extract Page-wise Text ==========
 def extract_text_by_page(pdf_path):
@@ -130,7 +132,8 @@ def extract_profiling_rules(pdf_name, schedule, category):
                     page_texts[page_num + 1] = text  # Convert back to one-based index
 
         # Extract rules using Groq LLM API
-        api_key = os.getenv("GROQ_API_KEY")
+        # api_key = os.getenv("GROQ_API_KEY")
+        api_key = get_available_api_key()
         if not api_key:
             raise ValueError("GROQ_API_KEY environment variable is not set.")
         all_rules = []

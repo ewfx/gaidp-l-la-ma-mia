@@ -4,6 +4,8 @@ import requests
 import os 
 from pymongo import MongoClient
 from services.base_mongo_service import BaseMongoService
+from services.utils import get_available_api_key
+
 
 def extract_word_after_hash(input_string):
     """
@@ -18,7 +20,7 @@ def extract_word_after_hash(input_string):
     match = re.search(r"#(\w+)", input_string)
     return match.group(1) if match else None
 
-def update_rules(update_condition, pdfName, schedule, category, api_key=os.environ.get('GROQ_API_KEY'), model='llama-3.3-70b-versatile'):
+def update_rules(update_condition, pdfName, schedule, category, api_key='', model='llama-3.3-70b-versatile'):
     """
     Updates the rules in the database with the given rule.
 
@@ -28,6 +30,7 @@ def update_rules(update_condition, pdfName, schedule, category, api_key=os.envir
         schedule (str): The schedule name.
         category (str): The category name.
     """
+    api_key = get_available_api_key()
     field = extract_word_after_hash(update_condition)
     if field is None:
         raise Exception("No field provided in the update condition.")
