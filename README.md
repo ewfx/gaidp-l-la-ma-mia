@@ -44,18 +44,8 @@ Describe the major technical or non-technical challenges your team encountered.
 
 ## 🏃 How to Run
 
-1. Clone the repository
-   ```sh
-   git clone https://github.com/your-repo.git
-   ```
-2. Install dependencies
-   ```sh
-   npm install  # or pip install -r requirements.txt (for Python)
-   ```
-3. Run the project
-   ```sh
-   npm start  # or uvicorn main:app --reload
-   ```
+1) [Backend Setup Guide](code/src/backend/README.md)
+2) [Frontend Setup Guide](code/src/frontend/README.md)
 
 ## 🏗️ Tech Stack
 

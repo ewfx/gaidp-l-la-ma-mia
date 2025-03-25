@@ -32,7 +32,7 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-
+    
     prompt = f"Extract data profiling rules from the following text for all variables / fields, make sure to only have 'variable : comma-separated rules' and no other extra text. Further where there are fixed values possible, mention that in the description :\n\n{page_text}"
 
     payload = {
