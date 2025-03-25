@@ -59,12 +59,15 @@ Describe the major technical or non-technical challenges your team encountered.
 
 ## 🏗️ Tech Stack
 
-- 🔹 Frontend: React / Vue / Angular
-- 🔹 Backend: Node.js / FastAPI / Django
-- 🔹 Database: PostgreSQL / Firebase
-- 🔹 Other: OpenAI API / Twilio / Stripe
+- 🔹 Frontend: React 
+- 🔹 Backend: FastAPI
+- 🔹 Database: MongoDB
+- 🔹 Other: Groq API(LLM chat endpoints - Free tier) 
 
 ## 👥 Team
 
 - **Parth Shukla** - [GitHub](#) | [LinkedIn](#)
 - **Agastya Varma** - [GitHub](#) | [LinkedIn](#)
+- **Agniva Basak** - [GitHub](#) | [LinkedIn](#)
+- **Prithvi Shenoy** - [GitHub](#) | [LinkedIn](#)
+- **Kristen Matthew Dsouza** - [GitHub](#) | [LinkedIn](#)
