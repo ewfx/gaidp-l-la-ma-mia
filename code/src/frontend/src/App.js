@@ -8,21 +8,13 @@ import {
   Menu,
   MenuItem,
   Box,
-  IconButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import HomeComponent from "./pages/HomeComponent/HomeComponent";
 import "./App.css";
 import ProfilingRulesComponent from "./pages/ProfilingRulesComponent/ProfilingRulesComponent";
-import DataComponent from "./pages/DataComponent/DataComponent";
 
 function App() {
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
     setAnchorEl(null);
   };

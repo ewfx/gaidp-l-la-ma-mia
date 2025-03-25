@@ -10,11 +10,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 
-export default function ChatComponent() {
+export default function ChatComponent({ pdfName, schedule, category, fetchProfilingRules, dataCollectionName, fetchViolations, profilingRuleData }) {
   const initialBotMessage = {
     text: "Hi! You can modify rule in simple language by identifying field using a #. For example, #age should not be negative",
     sender: "bot",
@@ -24,6 +26,8 @@ export default function ChatComponent() {
   const [input, setInput] = useState("");
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [pendingUpdate, setPendingUpdate] = useState(null); // Store the pending update
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -41,16 +45,27 @@ export default function ChatComponent() {
     setInput("");
 
     try {
+      if (!(pdfName && schedule && category)) {
+        setMessages([
+          ...newMessages,
+          { text: "Please select a pdf, schedule and category first.", sender: "bot" },
+        ]);
+        return;
+      }
+
+      // Encode the input to ensure special characters are handled properly
+      const encodedInput = encodeURIComponent(input);
+
       // Make a POST request to the chat endpoint
-      const response = await axios.post("http://127.0.0.1:8000/chat/", {
-        message: input,
-      });
+      const response = await axios.post(
+        `http://127.0.0.1:8000/chat?message=${encodedInput}&pdfName=${pdfName}&schedule=${schedule}&category=${category}`
+      );
 
       // Extract the response from the backend
       const botReply =
         typeof response.data.data === "string"
           ? response.data.data
-          : JSON.stringify(response.data.data);
+          : JSON.stringify(response.data.data.rule);
 
       // Add the system's reply to the chat
       setMessages([...newMessages, { text: botReply, sender: "bot" }]);
@@ -72,7 +87,7 @@ export default function ChatComponent() {
 
     try {
       // Make a POST request to update the rule in the database
-      const response = await axios.post("http://127.0.0.1:8000/chat/update", {
+      const response = await axios.post(`http://127.0.0.1:8000/chat/update?pdfName=${pdfName}&schedule=${schedule}&category=${category}`, {
         updated_rule: pendingUpdate,
       });
 
@@ -82,6 +97,8 @@ export default function ChatComponent() {
           { text: "Changes have been successfully updated in the database.", sender: "bot" },
           initialBotMessage, // Add the starting prompt after the success message
         ]);
+        fetchProfilingRules(pdfName, schedule, category); // Fetch the updated rules
+        dataCollectionName && fetchViolations(pdfName, schedule, category, dataCollectionName); // Fetch the updated
       } else {
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -107,6 +124,24 @@ export default function ChatComponent() {
       initialBotMessage,
       { text: "Changes were not confirmed and have been discarded.", sender: "bot" },
     ]);
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+
+    // Show dropdown if the user types "#"
+    if (value.endsWith("#")) {
+      setDropdownOpen(true);
+      setAnchorEl(e.currentTarget);
+    } else {
+      setDropdownOpen(false);
+    }
+  };
+
+  const handleDropdownSelect = (column) => {
+    setInput((prev) => `${prev}${column} `);
+    setDropdownOpen(false);
   };
 
   return (
@@ -191,10 +226,22 @@ export default function ChatComponent() {
             ),
           }}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
         />
+        <Menu
+          anchorEl={anchorEl}
+          open={dropdownOpen}
+          onClose={() => setDropdownOpen(false)}
+        >
+          {profilingRuleData &&
+            profilingRuleData.map((rule, index) => (
+              <MenuItem key={index} onClick={() => handleDropdownSelect(rule.fieldName)}>
+                {rule.fieldName}
+              </MenuItem>
+            ))}
+        </Menu>
       </div>
 
       {/* Confirmation Dialog */}

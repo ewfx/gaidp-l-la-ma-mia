@@ -13,6 +13,8 @@ import requests
 import pdfplumber
 import re
 from PyPDF2 import PdfReader, PdfWriter
+from pymongo import MongoClient
+from io import BytesIO
 
 def find_all_schedules(pdf_path, pageToSearchTill):
     schedules = set()
@@ -131,20 +133,51 @@ def get_page_range(contents_dict, schedule, subheading):
     else:
         raise ValueError(f"Subheading '{subheading}' not found in schedule '{schedule}'.")
 
-def extract_index(pdf_path):
-    _, pageToSearchTill = find_contents_and_first_heading(pdf_path)
-    schedules = find_all_schedules(pdf_path, pageToSearchTill)
-    contents_dict = {}
-    contents_dict["Name"] = pdf_path.split("/")[-1]
-    contents_dict["Schedules"] = []
-    for schedule in schedules:
-        contents_dict["Schedules"].append({"Name": schedule, "Categories": []})
-        # 1. Extract subheadings under Schedule A
-        headings = extract_subheadings_with_pages(pdf_path, pageToSearchTill, schedule_heading=schedule)
-        for heading, page in headings.items():
-            contents_dict["Schedules"][-1]["Categories"].append({"Name": heading, "Page": page})
-        # print(f"Extracted Subheadings and Pages for {schedule}:", headings)
+def extract_index(pdf_name):
+    """
+    Extracts the index from a PDF document stored as a blob in the MongoDB database.
 
-    print(contents_dict)
+    Args:
+        pdf_name (str): The name of the PDF to retrieve from the database.
 
-extract_index("/Users/agastya/Documents/Projects/gaidp-l-la-ma-mia/code/src/backend/data/FR_Y-14Q20240331_i.pdf")
+    Returns:
+        dict: A dictionary containing the extracted index information.
+    """
+    try:
+        # Initialize MongoDB client and collection
+        mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
+        db = mongo_client["DataProfiling"]
+        collection = db["Raw_PDFs"]
+
+        # Retrieve the PDF blob from the database
+        pdf_record = collection.find_one({"name": pdf_name})
+        if not pdf_record:
+            raise ValueError(f"PDF with name '{pdf_name}' not found in the database.")
+
+        pdf_blob = pdf_record["pdf_blob"]
+
+        # Load the PDF from the blob
+        pdf_stream = BytesIO(pdf_blob)
+
+        # Extract index information
+        with pdfplumber.open(pdf_stream) as pdf:
+            _, pageToSearchTill = find_contents_and_first_heading(pdf_stream)
+            schedules = find_all_schedules(pdf_stream, pageToSearchTill)
+            contents_dict = {}
+            contents_dict["Name"] = pdf_name
+            contents_dict["Schedules"] = []
+            for schedule in schedules:
+                contents_dict["Schedules"].append({"Name": schedule, "Categories": []})
+                # Extract subheadings under the schedule
+                headings = extract_subheadings_with_pages(pdf_stream, pageToSearchTill, schedule_heading=schedule)
+                for heading, page in headings.items():
+                    contents_dict["Schedules"][-1]["Categories"].append({"Name": heading, "Page": page})
+
+        return contents_dict
+
+    except Exception as e:
+        raise ValueError(f"Failed to extract index: {str(e)}")
+
+# Example usage:
+# result = extract_index("example.pdf")
+# print(result)
