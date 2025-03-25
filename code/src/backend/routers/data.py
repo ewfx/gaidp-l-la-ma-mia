@@ -151,6 +151,42 @@ async def upload_pdf(file: UploadFile = File(...)):
 
     return dto(isSuccess=True, data={"filename": pdf_name, "collection_name": "PDF_Index"})
 
+
+def check_rules_availability(pdfName: str, schedule: str, category: str) -> dict:
+    """
+    Checks if profiling rules are available for the given pdfName, schedule, and category.
+
+    Args:
+        pdfName (str): The name of the PDF.
+        schedule (str): The schedule name.
+        category (str): The category name.
+
+    Returns:
+        dict: A dictionary containing the collection name and whether the rules exist.
+    """
+    if not pdfName or not schedule or not category:
+        raise ValueError("Missing required parameters: pdfName, schedule, or category")
+
+    # Remove the .pdf extension from pdfName
+    sanitized_pdf_name = re.sub(r'\.pdf$', '', pdfName, flags=re.IGNORECASE)
+
+    # Generate the sanitized collection name
+    collection_name = f"{sanitized_pdf_name}_{schedule}_{category}"
+    collection_name = re.sub(r'[^a-zA-Z0-9_]', '', collection_name)  # Keep only alphanumeric characters and underscores
+    exists = False
+    # Check if the collection exists
+    try:
+        
+        mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
+        mongo_service = BaseMongoService(mongo_client, collection_name)
+        # print()
+        exists = mongo_service.collection_exists()
+    except Exception as e:
+        raise Exception(f"Failed to check if rules are available: {str(e)}")
+
+    return {"collectionName": collection_name, "exists": exists}
+
+
 @router.post("/extractprofilingrules")
 async def extract_profiling_rules_and_db_queries(pdfName: str = None, schedule: str = None, category: str = None):
     """
@@ -169,7 +205,8 @@ async def extract_profiling_rules_and_db_queries(pdfName: str = None, schedule: 
             raise HTTPException(status_code=400, detail="Missing required parameters: pdfName, schedule, or category")
 
         # Call the extract_profiling_rules function only if rules not generated
-        if not await is_rules_available(pdfName, schedule, category):
+        if check_rules_availability(pdfName, schedule, category).get("exists") == False:
+            print("Extracting profiling rules...")
             collection_name = extract_profiling_rules(pdfName, schedule, category)
         # Remove the .pdf extension from pdfName
         sanitized_pdf_name = re.sub(r'\.pdf$', '', pdfName, flags=re.IGNORECASE)
@@ -207,12 +244,14 @@ async def is_rules_available(pdfName: str = None, schedule: str = None, category
         # Generate the sanitized collection name
         collection_name = f"{sanitized_pdf_name}_{schedule}_{category}"
         collection_name = re.sub(r'[^a-zA-Z0-9_]', '', collection_name)  # Keep only alphanumeric characters and underscores
+        print(collection_name)
 
         # Check if the collection exists
         mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
         mongo_service = BaseMongoService(mongo_client, collection_name)
         exists = mongo_service.collection_exists()
-
+        print('----')
+        print(exists)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to check if rules are available: {str(e)}")
 

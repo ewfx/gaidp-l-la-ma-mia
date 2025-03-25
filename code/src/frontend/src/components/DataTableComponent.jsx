@@ -95,7 +95,7 @@ function DataTableComponent({ violations }) {
       <MUIDataTable
         title={
           <h2 style={{ textAlign: "left", marginBottom: "10px", color: "#DD1E25" }}>
-            Profiling Rules
+            Non-compliant data
           </h2>
         }
         data={violations || []}

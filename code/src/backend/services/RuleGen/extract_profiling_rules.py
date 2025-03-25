@@ -59,19 +59,33 @@ def extract_rules_llm_groq(page_text, page_number, api_key, model="llama-3.3-70b
 # ========== 3. Save Rules to List of Dictionaries ==========
 def save_rules_to_list(rules):
     """
-    Convert rules into a list of dictionaries.
+    Convert rules into a list of dictionaries, combining rules and page numbers
+    if the fieldName already exists in the list.
+
     :param rules: List of tuples containing (rule, page_number).
     :return: List of dictionaries, each representing a field and its details.
     """
     rules_list = []
     for rule, page in rules:
         field_name, rule_description = rule.split(':', 1)
-        rules_list.append({
-            "fieldName": field_name.strip(),
-            "rule": rule_description.strip(),
-            "query": "",
-            "pageNumber": page
-        })
+        field_name = field_name.strip().replace(" ", "_").upper()
+        rule_description = rule_description.strip()
+
+        # Check if the fieldName already exists in the rules_list
+        existing_entry = next((entry for entry in rules_list if entry["fieldName"] == field_name), None)
+        if existing_entry:
+            # Append the new rule and page number to the existing entry
+            existing_entry["rule"] += f"; {rule_description}"
+            existing_entry["pageNumber"] = f"{existing_entry['pageNumber']}, {page}"
+        else:
+            # Add a new entry to the rules_list
+            rules_list.append({
+                "fieldName": field_name,
+                "rule": rule_description,
+                "query": "",
+                "pageNumber": str(page)
+            })
+    print(f'Extracted rules: {rules_list}')
     return rules_list
 
 # ========== 4. Main Pipeline Execution ==========
@@ -90,6 +104,8 @@ def extract_profiling_rules(pdf_name, schedule, category):
     try:
         # Initialize MongoDB client and collections
         mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
+        print(f'yooooo: {pdf_name}')
+        pdf_name = pdf_name+'.pdf'
         db = mongo_client["DataProfiling"]
         pdf_index_collection = db["PDF_Index"]
         raw_pdfs_collection = db["Raw_PDFs"]

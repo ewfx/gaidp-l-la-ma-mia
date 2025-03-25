@@ -68,6 +68,41 @@ function ProfilingRulesComponent() {
     }
   };
 
+  const handleGenerateRules = async () => {
+    if (!(selectedPdf && selectedSchedule && selectedCategory)) {
+      setSnackbarMessage("Please select PDF, Schedule, and Section.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
+    setSnackbarMessage("Generating rules...");
+    setSnackbarSeverity("info");
+    setSnackbarOpen(true);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/data/extractprofilingrules?pdfName=${selectedPdf}&schedule=${selectedSchedule}&category=${selectedCategory}`
+      );
+
+      if (response.status === 200) {
+        setSnackbarMessage("Rules generated successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        fetchProfilingRules(selectedPdf, selectedSchedule, selectedCategory); // Refresh the profiling rules
+      } else {
+        setSnackbarMessage("Failed to generate rules.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error("Error generating rules:", error);
+      setSnackbarMessage("Error generating rules.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
   const fetchViolations = async (pdf, schedule, category, dataCollectionName) => {
     try {
       console.log("Fetching profiling rules...");
@@ -197,6 +232,18 @@ function ProfilingRulesComponent() {
           handleSectionChange={handleSectionChange}
           getSections={getSections}
         />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleGenerateRules}
+          style={{
+            margin: "8px",
+            width: "150px", 
+            alignSelf: "center",
+          }}
+        >
+          Generate Rules
+        </Button>
         {profilingRuleData ? <ProfilingRuleTableComponent profilingRuleData={profilingRuleData} /> : <></>}
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
           <div style={{ textAlign: "center" }}>
