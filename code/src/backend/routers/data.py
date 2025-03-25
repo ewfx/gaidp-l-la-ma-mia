@@ -50,8 +50,15 @@ async def upload_csv(file: UploadFile = File(...), pdfName: str = None, schedule
         # Add a row_number column to the DataFrame
         df["row_number"] = range(1, len(df) + 1)
 
+        # Remove the .pdf extension from pdfName
+        sanitized_pdf_name = re.sub(r'\.pdf$', '', pdfName, flags=re.IGNORECASE)
+
+        # Generate the sanitized collection name
+        collection_name = f"{sanitized_pdf_name}_{schedule}_{category}"
+        collection_name = re.sub(r'[^a-zA-Z0-9_]', '', collection_name)  # Keep only alphanumeric characters and underscores
+
         # Generate a unique collection name
-        collection_name = f"{pdfName}_{schedule}_{category}_{uuid.uuid4().hex}"
+        collection_name = f"{collection_name}_{uuid.uuid4().hex}"
 
         # Initialize MongoDB client and service
         mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
@@ -206,7 +213,7 @@ async def is_rules_available(pdfName: str = None, schedule: str = None, category
 
     return dto(isSuccess=True, data={"collectionName": collection_name, "exists": exists})
 
-@router.post("/violations")
+@router.get("/violations")
 async def get_violations(pdfName: str = None, schedule: str = None, category: str = None, dataCollectionName: str = None):
     """
     Endpoint to fetch DB queries associated with profiling rules and run them against data uploaded by the user.

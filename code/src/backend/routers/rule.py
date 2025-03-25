@@ -1,4 +1,5 @@
 import os
+import re
 from fastapi import APIRouter, HTTPException
 from dto.response_dto import ResponseDTO as dto
 from models.rule_get_request_model import RuleGetRequestModel
@@ -13,25 +14,26 @@ router = APIRouter(prefix="/file")
 load_dotenv()
 MONGO_URI = os.environ.get("MONGO_URI")
 mongo_client = MongoClient(MONGO_URI)
-print("MongoDB connected")
 
 router = APIRouter(prefix="/rule")
 # http://127.0.0.1:8000/rule?pdf=PDFName&schedule=ScheduleA&category=USAutoLoan
 @router.get("")
-def get_rules(pdf: str, schedule: str, category: str):
+def get_rules(pdfName: str = None, schedule: str = None, category: str = None):
     try:
-        # Convert query parameters into a RuleGetRequestModel object
-        request = RuleGetRequestModel(pdf=pdf, schedule=schedule, category=category)
+        if not pdfName or not schedule or not category:
+            raise HTTPException(status_code=400, detail="Missing required parameters: pdfName, schedule, category")
         
-        # Create a service for the "data_field" collection in the "my_database" database
-        print(f"collection: {request.pdf}_{request.schedule}_{request.category}")
-        data_field_service = BaseMongoService(mongo_client, f"{request.pdf}_{request.schedule}_{request.category}")
-        
-        # Retrieve all documents in the collection with specific fields
-        documents = data_field_service.get_all(
-            fields={"_id": 1, "columnName": 1, "description": 1, "rules": 1}
-        )
-        return dto(isSuccess=True, data=documents)
+        # Remove the .pdf extension from pdfName
+        sanitized_pdf_name = re.sub(r'\.pdf$', '', pdfName, flags=re.IGNORECASE)
+
+        # Generate the sanitized collection name for rules
+        rules_collection_name = f"{sanitized_pdf_name}_{schedule}_{category}"
+        rules_collection_name = re.sub(r'[^a-zA-Z0-9_]', '', rules_collection_name)  # Keep only alphanumeric characters and underscores
+        rules_service = BaseMongoService(mongo_client, rules_collection_name)
+
+        # Fetch all rules from the rules collection
+        rules = rules_service.get_all()
+        return dto(isSuccess=True, data=rules)
     except Exception as e:
         return dto(isSuccess=False, errorMessage=str(e))
 

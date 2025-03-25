@@ -1,92 +1,107 @@
-import React, { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Collapse,
-} from "@mui/material";
+import React from "react";
+import MUIDataTable from "mui-datatables";
 
-function DataTableComponent({ profiledData }) {
-  const [open, setOpen] = useState(true);
+function DataTableComponent({ violations }) {
+  const columns = [
+    {
+      name: "row_number",
+      label: "Row Number",
+      options: {
+        setCellHeaderProps: () => ({
+          style: { backgroundColor: "#DD1E25", color: "white" },
+        }),
+      },
+    },
+    {
+      name: "rules_violated",
+      label: "Profiling Rules Violated",
+      options: {
+        customBodyRender: (value) => (
+          <div>
+            {value.map((item, index) => (
+              <div key={index}>→ {item}</div>
+            ))}
+          </div>
+        ), // Render array items as separate lines
+        setCellHeaderProps: () => ({
+          style: { backgroundColor: "#DD1E25", color: "white" },
+        }),
+      },
+    },
+    {
+      name: "associated_columns",
+      label: "Associated Columns",
+      options: {
+        customBodyRender: (value) => (
+          <div>
+            {value.map((item, index) => (
+              <div key={index}>→ {item}</div>
+            ))}
+          </div>
+        ), // Render array items as separate lines
+        setCellHeaderProps: () => ({
+          style: { backgroundColor: "#DD1E25", color: "white" },
+        }),
+      },
+    },
+    {
+      name: "remediation",
+      label: "Remediation",
+      options: {
+        customBodyRender: (value) =>
+          value.length > 0 ? (
+            <div>
+              {value.map((item, index) => (
+                <div key={index}>→ {item}</div>
+              ))}
+            </div>
+          ) : (
+            "N/A"
+          ), // Render array items as separate lines or "N/A" if empty
+          setCellHeaderProps: () => ({
+            style: { backgroundColor: "#DD1E25", color: "white" },
+          }),
+      },
+    },
+  ];
+
+  const options = {
+    filter: true,
+    filterType: "dropdown",
+    responsive: "standard",
+    selectableRows: "none",
+    rowsPerPage: 5,
+    rowsPerPageOptions: [5, 10, 15],
+    download: true,
+    search: true,
+    viewColumns: true,
+    customHeadRender: (columnMeta) => (
+      <th
+        key={columnMeta.index}
+        style={{
+          backgroundColor: "#DD1E25",
+          color: "white",
+          padding: "10px",
+          textAlign: "left",
+        }}
+      >
+        {columnMeta.label}
+      </th>
+    ),
+  };
 
   return (
-    <div
-      style={{ textAlign: "center", marginTop: "20px", marginBottom: "30px" }}
-    >
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setOpen(!open)}
-        sx={{ marginBottom: "20px" }}
-      >
-        {open ? "Hide Data" : "Show Data"}
-      </Button>
-
-      <Collapse in={open}>
-        <TableContainer
-          component={Paper}
-          sx={{
-            width: "80%",
-            border: "1px solid #ccc",
-            alignSelf: "center",
-            margin: "auto",
-          }}
-        >
-          <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
-            <TableHead sx={{ backgroundColor: "#DD1E25", color: "white" }}>
-              <TableRow>
-                <TableCell
-                  sx={{ border: "1px solid #ddd", color: "white" }}
-                  align="left"
-                >
-                  Data ID
-                </TableCell>
-                <TableCell
-                  sx={{ border: "1px solid #ddd", color: "white" }}
-                  align="left"
-                >
-                  Profiling Rule Violated
-                </TableCell>
-                <TableCell
-                  sx={{ border: "1px solid #ddd", color: "white" }}
-                  align="left"
-                >
-                  Associated Column
-                </TableCell>
-                <TableCell
-                  sx={{ border: "1px solid #ddd", color: "white" }}
-                  align="left"
-                >
-                  Remediation
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {profiledData.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.id}
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.profilingRuleViolated}
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.column}
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #ddd" }} align="left">
-                    {row.remediation}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Collapse>
+    <div style={{ margin: "20px" }}>
+      <MUIDataTable
+        title={
+          <h2 style={{ textAlign: "left", marginBottom: "10px", color: "#DD1E25" }}>
+            Profiling Rules
+          </h2>
+        }
+        data={violations || []}
+        columns={columns}
+        options={options}
+      />
     </div>
   );
 }
