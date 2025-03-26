@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -28,12 +28,32 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
   const [pendingUpdate, setPendingUpdate] = useState(null); // Store the pending update
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [typingMessage, setTypingMessage] = useState(null); // State to handle typewriter effect
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       sendMessage();
     }
+  };
+
+  const addBotMessageWithTypingEffect = (text) => {
+    setTypingMessage(""); // Start with an empty message
+    let index = 0;
+
+    const interval = setInterval(() => {
+      if (index <= text.length) { // Include the first character
+        setTypingMessage(text.slice(0, index)); // Use slice to include characters up to the current index
+        index++;
+      } else {
+        clearInterval(interval); // Stop the interval when the message is complete
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text, sender: "bot" },
+        ]);
+        setTypingMessage(null); // Clear the typing message
+      }
+    }, 20); // Adjust typing speed by changing the interval time
   };
 
   const sendMessage = async () => {
@@ -46,10 +66,7 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
 
     try {
       if (!(pdfName && schedule && category)) {
-        setMessages([
-          ...newMessages,
-          { text: "Please select a pdf, schedule and category first.", sender: "bot" },
-        ]);
+        addBotMessageWithTypingEffect("Please select a pdf, schedule and category first.");
         return;
       }
 
@@ -67,18 +84,14 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
           ? response.data.data
           : JSON.stringify(response.data.data.rule);
 
-      // Add the system's reply to the chat
-      setMessages([...newMessages, { text: botReply, sender: "bot" }]);
-
-      // Store the pending update and open the confirmation dialog
-      setPendingUpdate(response.data.data);
-      setConfirmDialogOpen(true);
+      // Add the bot's reply with a typing effect
+      addBotMessageWithTypingEffect(`The updated profiling rule will be ${botReply}`);
+       // Store the pending update and open the confirmation dialog
+       setPendingUpdate(response.data.data);
+       setConfirmDialogOpen(true);
     } catch (error) {
       console.error("Error fetching response:", error);
-      setMessages([
-        ...newMessages,
-        { text: "Error fetching response from the server.", sender: "bot" },
-      ]);
+      addBotMessageWithTypingEffect("Error fetching response from the server.");
     }
   };
 
@@ -92,11 +105,12 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
       });
 
       if (response.data.isSuccess) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: "Changes have been successfully updated in the database.", sender: "bot" },
-          initialBotMessage, // Add the starting prompt after the success message
-        ]);
+        addBotMessageWithTypingEffect("Changes have been successfully updated in the database.");
+        // setMessages((prevMessages) => [
+        //   ...prevMessages,
+        //   { text: "Changes have been successfully updated in the database.", sender: "bot" },
+        //   initialBotMessage, // Add the starting prompt after the success message
+        // ]);
         fetchProfilingRules(pdfName, schedule, category); // Fetch the updated rules
         dataCollectionName && fetchViolations(pdfName, schedule, category, dataCollectionName); // Fetch the updated
       } else {
@@ -120,10 +134,11 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
   const cancelUpdate = () => {
     setConfirmDialogOpen(false);
     setPendingUpdate(null);
-    setMessages([
-      initialBotMessage,
-      { text: "Changes were not confirmed and have been discarded.", sender: "bot" },
-    ]);
+    addBotMessageWithTypingEffect("Changes were not confirmed and have been discarded.");
+    // setMessages([
+    //   initialBotMessage,
+    //   { text: "Changes were not confirmed and have been discarded.", sender: "bot" },
+    // ]);
   };
 
   const handleInputChange = (e) => {
@@ -200,6 +215,38 @@ export default function ChatComponent({ pdfName, schedule, category, fetchProfil
               </div>
             </div>
           ))}
+          {typingMessage && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: "8px",
+                marginBottom: "8px",
+              }}
+            >
+              <img
+                src="/llamamia_logo.png"
+                alt="Bot"
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                }}
+              />
+              <div
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  maxWidth: "60%",
+                  backgroundColor: "#343146",
+                  color: "white",
+                }}
+              >
+                {typingMessage}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
       <div
