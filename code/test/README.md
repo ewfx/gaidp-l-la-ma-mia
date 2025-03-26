@@ -1,3 +1,5 @@
-## Delete this file
+## Test files used
 
-Instead place your test files here
+Generated data is used to showcase the compliance validation capabilities of the application.
+
+Profiling rules showcases an example of the rules extracted from the PDF by the LLM.
