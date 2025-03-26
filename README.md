@@ -45,10 +45,11 @@ This solution processes regulatory documents and CSV data, detects rule violatio
 
 Our solution is designed as a scalable and modular system integrating AI-driven data profiling with an interactive compliance assistant.
 
-Frontend (React): We built a user-friendly web interface that allows users to upload regulatory documents and CSV data, interact with an LLM-powered chatbot, and review flagged anomalies.
-Backend (FastAPI): The backend processes user inputs, manages document parsing, runs validation checks, and interacts with the LLM for rule extraction and refinement.
-Database (MongoDB): All extracted profiling rules, validation results, and user updates are stored in MongoDB, ensuring efficient querying and updates.
-LLM Integration (Groq API): We leverage Groq API for processing regulatory instructions, interpreting prompts, and generating validation rules, enabling automated compliance insights.
+- Frontend (React): We built a user-friendly web interface that allows users to upload regulatory documents and CSV data, interact with an LLM-powered chatbot, and review flagged anomalies.
+- Backend (FastAPI): The backend processes user inputs, manages document parsing, runs validation checks, and interacts with the LLM for rule extraction and refinement.
+- Database (MongoDB): All extracted profiling rules, validation results, and user updates are stored in MongoDB, ensuring efficient querying and updates.
+- LLM Integration (Groq API)(llama-3.3-70b-versatile): We leverage Groq API for processing regulatory instructions, interpreting prompts, generating validation rules, and generating validation queries enabling automated compliance insights.
+
 This end-to-end pipeline seamlessly connects data ingestion, AI-driven profiling, and real-time compliance validation while keeping the system efficient and adaptable.
 
 ## 🚧 Challenges We Faced
