@@ -34,7 +34,7 @@ function App() {
                 fontWeight: "bold",
               }}
             >
-              Data Profiler - LLama Mia
+              Data Profiler - LLaMa Mia
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
             <div style={{ marginLeft: "auto" }}>

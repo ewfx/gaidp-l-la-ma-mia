@@ -20,7 +20,7 @@ This GenAI-powered data profiling solution automates the extraction, interpretat
 
 ## 🎥 Demo
 
-📹 [Video Demo](https://drive.google.com/file/d/1kOJJveQi887PlvuWRI4NvtraAMCrhWrr/view?usp=share_link)  
+📹 [Video Demo](https://drive.google.com/file/d/1ygnKxkxigE5UA2KIAmN-EkWDTHkTq-ud/view?usp=share_link)  
 🖼️ Screenshots:
 
 ![Main page](artifacts/demo/main_page.png)
