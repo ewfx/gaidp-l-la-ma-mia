@@ -1,3 +1,3 @@
-## Delete this file
+## Source Code
 
-Instead place your source files here
+The source code is split into 2 folders, the frontend and backend). Each folder has the respective setup instructions.
