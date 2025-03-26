@@ -12,7 +12,7 @@ function ProfilingRulesComponent() {
   const [selectedSchedule, setSelectedSchedule] = useState(""); // Default value for selectedSchedule
   const [selectedCategory, setSelectedCategory] = useState(""); // Default value for selectedSection
   const [dataCollectionName, setDataCollectionName] = useState();
-  const [violations, setViolations] = useState( );
+  const [violations, setViolations] = useState();
   const [profilingRuleData, setProfilingRuleData] = useState();
   const [csvFile, setCsvFile] = useState(null); // State to store the selected CSV file
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar visibility
@@ -36,9 +36,7 @@ function ProfilingRulesComponent() {
   const getCategoryData = async () => {
     try {
       console.log("Fetching profiling rules...");
-      const response = await axios.get(
-        `http://127.0.0.1:8000/file/list`
-      );
+      const response = await axios.get(`http://127.0.0.1:8000/file/list`);
       console.log("Index response:", response.data);
       if (response.data.isSuccess) {
         return response.data.data;
@@ -53,16 +51,21 @@ function ProfilingRulesComponent() {
   const fetchProfilingRules = async (pdf, schedule, category) => {
     try {
       console.log("Fetching profiling rules...");
-      const response = await axios.get(
-        `http://127.0.0.1:8000/rule?pdfName=${pdf}&schedule=${schedule}&category=${category}`
-      ).then((response) => {
-        console.log("Profiling rules response:", response.data);
-        if (response.data.isSuccess) {
-          setProfilingRuleData(response.data.data);
-        } else {
-          console.error("Error fetching profiling rules:", response.data.errorMessage);
-        }
-      });
+      const response = await axios
+        .get(
+          `http://127.0.0.1:8000/rule?pdfName=${pdf}&schedule=${schedule}&category=${category}`
+        )
+        .then((response) => {
+          console.log("Profiling rules response:", response.data);
+          if (response.data.isSuccess) {
+            setProfilingRuleData(response.data.data);
+          } else {
+            console.error(
+              "Error fetching profiling rules:",
+              response.data.errorMessage
+            );
+          }
+        });
     } catch (error) {
       console.error("Error fetching profiling rules:", error);
     }
@@ -103,19 +106,29 @@ function ProfilingRulesComponent() {
     }
   };
 
-  const fetchViolations = async (pdf, schedule, category, dataCollectionName) => {
+  const fetchViolations = async (
+    pdf,
+    schedule,
+    category,
+    dataCollectionName
+  ) => {
     try {
       console.log("Fetching profiling rules...");
-      const response = await axios.get(
-        `http://127.0.0.1:8000/data/violations?pdfName=${pdf}&schedule=${schedule}&category=${category}&dataCollectionName=${dataCollectionName}`
-      ).then((response) => {
-        console.log("Violations response:", response.data);
-        if (response.data.isSuccess) {
-          setViolations(response.data.data);
-        } else {
-          console.error("Error fetching violations:", response.data.errorMessage);
-        }
-      });
+      const response = await axios
+        .get(
+          `http://127.0.0.1:8000/data/violations?pdfName=${pdf}&schedule=${schedule}&category=${category}&dataCollectionName=${dataCollectionName}`
+        )
+        .then((response) => {
+          console.log("Violations response:", response.data);
+          if (response.data.isSuccess) {
+            setViolations(response.data.data);
+          } else {
+            console.error(
+              "Error fetching violations:",
+              response.data.errorMessage
+            );
+          }
+        });
     } catch (error) {
       console.error("Error fetching profiling rules:", error);
     }
@@ -127,7 +140,7 @@ function ProfilingRulesComponent() {
       return;
     }
 
-    if(!(selectedPdf && selectedSchedule && selectedCategory)) {
+    if (!(selectedPdf && selectedSchedule && selectedCategory)) {
       // Show error popup
       setSnackbarMessage("Please select PDF, Schedule, and Section.");
       setSnackbarSeverity("error");
@@ -139,15 +152,24 @@ function ProfilingRulesComponent() {
     formData.append("file", csvFile);
 
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/data/uploadcsv?pdfName=${selectedPdf}&schedule=${selectedSchedule}&category=${selectedCategory}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if(response.data.isSuccess) {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/data/uploadcsv?pdfName=${selectedPdf}&schedule=${selectedSchedule}&category=${selectedCategory}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.data.isSuccess) {
         console.log("CSV upload response:", response.data);
         setDataCollectionName(response.data.data.collection_name);
-        fetchViolations(selectedPdf, selectedSchedule, selectedCategory, response.data.data.collection_name);
+        fetchViolations(
+          selectedPdf,
+          selectedSchedule,
+          selectedCategory,
+          response.data.data.collection_name
+        );
       }
 
       // Show success popup
@@ -222,7 +244,17 @@ function ProfilingRulesComponent() {
         }}
       >
         {/* PDF Upload Section */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "16px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            marginTop: "35px",
+            marginBottom: "0px",
+          }}
+        >
           <input
             type="file"
             accept=".pdf"
@@ -256,14 +288,26 @@ function ProfilingRulesComponent() {
           onClick={handleGenerateRules}
           style={{
             margin: "8px",
-            width: "150px", 
+            marginTop: "25px",
+            width: "190px",
             alignSelf: "center",
           }}
         >
           Generate Rules
         </Button>
-        {profilingRuleData ? <ProfilingRuleTableComponent profilingRuleData={profilingRuleData} /> : <></>}
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+        {profilingRuleData ? (
+          <ProfilingRuleTableComponent profilingRuleData={profilingRuleData} />
+        ) : (
+          <></>
+        )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
           <div style={{ textAlign: "center" }}>
             <input type="file" accept=".csv" onChange={handleFileChange} />
             <Button
@@ -276,8 +320,15 @@ function ProfilingRulesComponent() {
             </Button>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "16px" }}>
-          {violations? <DataTableComponent violations={violations} /> : <></>}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            marginTop: "16px",
+          }}
+        >
+          {violations ? <DataTableComponent violations={violations} /> : <></>}
         </div>
       </div>
       <div
@@ -290,11 +341,11 @@ function ProfilingRulesComponent() {
           overflow: "auto", // Ensure scrolling is handled here if needed
         }}
       >
-        <ChatComponent 
-          pdfName={selectedPdf} 
+        <ChatComponent
+          pdfName={selectedPdf}
           schedule={selectedSchedule}
           category={selectedCategory}
-          fetchProfilingRules={fetchProfilingRules} 
+          fetchProfilingRules={fetchProfilingRules}
           dataCollectionName={dataCollectionName}
           fetchViolations={fetchViolations}
           profilingRuleData={profilingRuleData}
@@ -308,7 +359,11 @@ function ProfilingRulesComponent() {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
