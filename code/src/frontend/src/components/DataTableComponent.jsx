@@ -43,26 +43,7 @@ function DataTableComponent({ violations }) {
           style: { backgroundColor: "#DD1E25", color: "white" },
         }),
       },
-    },
-    {
-      name: "remediation",
-      label: "Remediation",
-      options: {
-        customBodyRender: (value) =>
-          value.length > 0 ? (
-            <div>
-              {value.map((item, index) => (
-                <div key={index}>→ {item}</div>
-              ))}
-            </div>
-          ) : (
-            "N/A"
-          ), // Render array items as separate lines or "N/A" if empty
-          setCellHeaderProps: () => ({
-            style: { backgroundColor: "#DD1E25", color: "white" },
-          }),
-      },
-    },
+    }
   ];
 
   const options = {
@@ -91,7 +72,7 @@ function DataTableComponent({ violations }) {
   };
 
   return (
-    <div style={{ margin: "20px" }}>
+    <div style={{ margin: "20px", width: "100%" }}>
       <MUIDataTable
         title={
           <h2 style={{ textAlign: "left", marginBottom: "10px", color: "#DD1E25" }}>
