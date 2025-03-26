@@ -24,3 +24,15 @@ pip install -r requirements.txt
 ```
 uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
+
+## .env file
+
+You also need a .env file in the following format
+
+```
+MONGO_URI=<>
+GROQ_API_KEY_1=<>
+GROQ_API_KEY_2=<>
+GROQ_API_KEY_3=<>
+GROQ_API_KEY_4=<>
+```

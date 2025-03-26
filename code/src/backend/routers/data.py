@@ -286,7 +286,8 @@ async def get_violations(pdfName: str = None, schedule: str = None, category: st
         mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
         rules_service = BaseMongoService(mongo_client, rules_collection_name)
         data_service = BaseMongoService(mongo_client, dataCollectionName)
-
+        fields = data_service.get_all_fields()
+        print(f'$$$$$$$$$$$ we got all fields {fields}')
         # Fetch all rules from the rules collection
         rules = rules_service.get_all()
 
@@ -298,7 +299,8 @@ async def get_violations(pdfName: str = None, schedule: str = None, category: st
             field_name = rule.get("fieldName")
             query = rule.get("query")
             rule_description = rule.get("rule")
-
+            if field_name not in fields:
+                continue
             if not query:
                 continue  # Skip if no query is defined for the rule
 
