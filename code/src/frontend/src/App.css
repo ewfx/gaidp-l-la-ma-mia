@@ -1,6 +1,12 @@
+html{
+  max-height: 100vh;
+  overflow: hidden;
+}
+
 .App {
   text-align: center;
   height: 100vh;
+  overflow: hidden;
 }
 
 .App-header {
