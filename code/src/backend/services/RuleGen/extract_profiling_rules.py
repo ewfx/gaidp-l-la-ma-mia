@@ -68,9 +68,10 @@ def save_rules_to_list(rules):
     rules_list = []
     for rule, page in rules:
         field_name, rule_description = rule.split(':', 1)
-        field_name = field_name.strip().replace(" ", "_").upper()
+        field_name = field_name.replace('$', '').replace('#', '').replace('$', '').strip().replace(" ", "_").upper()
         rule_description = rule_description.strip()
-
+        temp_field_name = field_name
+        temp_field_name = temp_field_name.replace('$', '').replace('#', '').replace('$', '').strip().replace(" ", "_").upper()
         # Check if the fieldName already exists in the rules_list
         existing_entry = next((entry for entry in rules_list if entry["fieldName"] == field_name), None)
         if existing_entry:
@@ -105,7 +106,7 @@ def extract_profiling_rules(pdf_name, schedule, category):
         # Initialize MongoDB client and collections
         mongo_client = MongoClient(os.environ.get("MONGO_URI"))  # Replace with your MongoDB connection string
         print(f'yooooo: {pdf_name}')
-        pdf_name = pdf_name+'.pdf'
+        # pdf_name = pdf_name+'.pdf'
         db = mongo_client["DataProfiling"]
         pdf_index_collection = db["PDF_Index"]
         raw_pdfs_collection = db["Raw_PDFs"]

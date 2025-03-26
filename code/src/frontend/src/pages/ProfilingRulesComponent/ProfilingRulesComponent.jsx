@@ -221,6 +221,24 @@ function ProfilingRulesComponent() {
           overflow: "auto", // Enable scrolling only for this section
         }}
       >
+        {/* PDF Upload Section */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "16px" }}>
+          <input
+            type="file"
+            accept=".pdf"
+            // onChange={handlePdfFileChange}
+            style={{ marginBottom: "8px" }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            // onClick={handlePdfUpload}
+            style={{ width: "150px" }}
+          >
+            Upload PDF
+          </Button>
+        </div>
+        {/* end */}
         <SelectorComponent
           categories={categories}
           selectedPdf={selectedPdf}

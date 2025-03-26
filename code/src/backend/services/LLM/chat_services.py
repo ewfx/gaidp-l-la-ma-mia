@@ -76,11 +76,12 @@ def update_rules(update_condition, pdfName, schedule, category, api_key='', mode
     if response.status_code == 200:
         result = response.json()
         output_text = result['choices'][0]['message']['content']
-
+        print(type(output_text))
         # Clean up the JSON-like string and convert it to a Python dictionary
         try:
             print(f"Updated rule as JSON-like string: {output_text}")
-            cleaned_json = output_text.strip('```json\n').strip('```')  # Remove the ```json and ``` markers
+            cleaned_json = output_text.strip('```json\n').strip('```').replace("False", "false").replace("True", "true").replace("None", "null")  # Remove the ```json and ``` markers
+            print(f"Cleaned JSON-like string: {cleaned_json}")
             updated_rule = json.loads(cleaned_json)  # Convert to Python dictionary
             print(f"Updated rule as Python dict: {updated_rule}")
             return updated_rule

@@ -131,3 +131,23 @@ class BaseMongoService:
             dict: The document if found, otherwise None.
         """
         return self.collection.find_one(query)
+    
+    def get_all_fields(self) -> list:
+        """
+        Retrieve all the fields of any object in the collection.
+
+        Returns:
+            list: A list of field names present in the collection.
+        """
+        try:
+            # Fetch a single document from the collection
+            document = self.collection.find_one()
+            if document:
+                # Return the keys (field names) of the document
+                return list(document.keys())
+            else:
+                print("No documents found in the collection.")
+                return []
+        except Exception as e:
+            print(f"Error retrieving fields: {e}")
+            return []

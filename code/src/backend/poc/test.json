@@ -1,0 +1,16 @@
+{
+    "_id": "67e3876e7e2ceb6a6f37d561",
+    "fieldName": "RSSD_ID",
+    "rule": "numeric, required, non-empty, fixed length",
+    "query": {
+        "$or": [
+            {"RSSD_ID": {"$exists": False}},
+            {"RSSD_ID": {"$type": "string"}},
+            {"RSSD_ID": ""},
+            {"RSSD_ID": {"$not": {"$regex": "^\\d+$"}}},
+            {"RSSD_ID": {"$not": {"$regex": "^(\\d{1,})$"}}},
+            {"RSSD_ID": {"$not": {"$type": "int"}}}
+        ]
+    },
+    "pageNumber": "17"
+}
