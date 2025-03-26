@@ -221,7 +221,7 @@ async def extract_profiling_rules_and_db_queries(pdfName: str = None, schedule: 
 
     return dto(isSuccess=True, data={"collectionName": collection_name})
 
-@router.post("/isrulesavailbale")
+@router.get("/isrulesavailbale")
 async def is_rules_available(pdfName: str = None, schedule: str = None, category: str = None):
     """
     Endpoint to check if profiling rules are available.

@@ -4,11 +4,11 @@ import SelectorComponent from "../../components/SelectorComponent.jsx";
 import ChatComponent from "../../components/ChatComponent.jsx";
 import DataTableComponent from "../../components/DataTableComponent.jsx";
 import ProfilingRuleTableComponent from "../../components/ProfilingRuleTableComponent.jsx";
-import { Button, Snackbar, Alert } from "@mui/material";
+import { Button, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 
 function ProfilingRulesComponent() {
   const [categories, setCategories] = useState([]);
-  const [selectedPdf, setSelectedPdf] = useState(""); // Default value for selectedPdf
+  const [selectedPdf, setSelectedPdf] = useState(null); // Default value for selectedPdf
   const [selectedSchedule, setSelectedSchedule] = useState(""); // Default value for selectedSchedule
   const [selectedCategory, setSelectedCategory] = useState(""); // Default value for selectedSection
   const [dataCollectionName, setDataCollectionName] = useState();
@@ -18,6 +18,7 @@ function ProfilingRulesComponent() {
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar visibility
   const [snackbarMessage, setSnackbarMessage] = useState(""); // State for Snackbar message
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // State for Snackbar severity
+  const [generateDialogOpen, setGenerateDialogOpen] = useState(false);
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -29,9 +30,31 @@ function ProfilingRulesComponent() {
   // Fetch profiling rules whenever pdf, schedule, or section changes
   useEffect(() => {
     if (selectedPdf && selectedSchedule && selectedCategory) {
-      fetchProfilingRules(selectedPdf, selectedSchedule, selectedCategory);
+      checkIfRulesExist(selectedPdf, selectedSchedule, selectedCategory)
     }
   }, [selectedPdf, selectedSchedule, selectedCategory]);
+
+  const checkIfRulesExist = async (pdf, schedule, category) => {
+    try {
+      console.log("Checking if profiling rules exist");
+      axios.get(`http://127.0.0.1:8000/data/isrulesavailbale?pdfName=${pdf}&schedule=${schedule}&category=${category}`)
+      .then((response) => {
+        if (response.data.isSuccess) {
+          console.log("Rules exist:", response.data.data.exists);
+          if(response.data.data.exists) {
+            fetchProfilingRules(selectedPdf, selectedSchedule, selectedCategory);
+          } else {
+            console.log("dfhjdksf")
+            setGenerateDialogOpen(true); // Open dialog if rules don't exist
+          }
+        } else {
+          console.error("Error checking for rules");
+        }
+    })
+    } catch (error) {
+      console.error("Error checkinf if rules exist:", error);
+    }
+  }
 
   const getCategoryData = async () => {
     try {
@@ -104,6 +127,39 @@ function ProfilingRulesComponent() {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
+  };
+
+  const handleGenerateRulesConfirm = async () => {
+    setGenerateDialogOpen(false);
+    setSnackbarMessage("Generating rules...");
+    setSnackbarSeverity("info");
+    setSnackbarOpen(true);
+
+    try {
+      const response = axios.post(
+        `http://localhost:8000/data/extractprofilingrules?pdfName=${selectedPdf}&schedule=${selectedSchedule}&category=${selectedCategory}`
+      );
+
+      // if (response.status === 200) {
+      //   setSnackbarMessage("Rules generated successfully!");
+      //   setSnackbarSeverity("success");
+      //   setSnackbarOpen(true);
+      //   fetchProfilingRules(selectedPdf, selectedSchedule, selectedCategory); // Refresh the profiling rules
+      // } else {
+      //   setSnackbarMessage("Failed to generate rules.");
+      //   setSnackbarSeverity("error");
+      //   setSnackbarOpen(true);
+      // }
+    } catch (error) {
+      console.error("Error generating rules:", error);
+      setSnackbarMessage("Error generating rules.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleGenerateRulesCancel = () => {
+    setGenerateDialogOpen(false);
   };
 
   const fetchViolations = async (
@@ -186,8 +242,54 @@ function ProfilingRulesComponent() {
     }
   };
 
+  const handlePdfUpload = async () => {
+    if (!selectedPdf) {
+      setSnackbarMessage("Please select PDF file to upload.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedPdf);
+
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/data/uploadpdf`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.data.isSuccess) {
+        console.log("PDF upload response:", response.data);
+        getCategoryData().then((data) => {
+          setCategories(data);
+        });
+      }
+
+      // Show success popup
+      setSnackbarMessage("PDF file uploaded successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error uploading PDF file:", error);
+
+      // Show error popup
+      setSnackbarMessage("Failed to upload PDF file.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
   const handleFileChange = (event) => {
     setCsvFile(event.target.files[0]);
+  };
+
+  const handlePdfUploadChange = (event) => {
+    setSelectedPdf(event.target.files[0]);
   };
 
   const handleSnackbarClose = () => {
@@ -255,20 +357,17 @@ function ProfilingRulesComponent() {
             marginBottom: "0px",
           }}
         >
-          <input
-            type="file"
-            accept=".pdf"
-            // onChange={handlePdfFileChange}
-            style={{ marginBottom: "8px" }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            // onClick={handlePdfUpload}
-            style={{ width: "150px" }}
-          >
-            Upload PDF
-          </Button>
+          <div style={{ textAlign: "center" }}>
+            <input type="file" accept=".pdf" onChange={handlePdfUploadChange} />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePdfUpload}
+              style={{ marginTop: "8px" }}
+            >
+              Upload PDF
+            </Button>
+          </div>
         </div>
         {/* end */}
         <SelectorComponent
@@ -282,19 +381,6 @@ function ProfilingRulesComponent() {
           handleSectionChange={handleSectionChange}
           getSections={getSections}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleGenerateRules}
-          style={{
-            margin: "8px",
-            marginTop: "25px",
-            width: "190px",
-            alignSelf: "center",
-          }}
-        >
-          Generate Rules
-        </Button>
         {profilingRuleData ? (
           <ProfilingRuleTableComponent profilingRuleData={profilingRuleData} />
         ) : (
@@ -367,6 +453,28 @@ function ProfilingRulesComponent() {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <Dialog
+        open={generateDialogOpen}
+        onClose={handleGenerateRulesCancel}
+        aria-labelledby="generate-dialog-title"
+        aria-describedby="generate-dialog-description"
+      >
+        <DialogTitle id="generate-dialog-title">Generate Rules</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="generate-dialog-description">
+            Profiling rules for the selected category do not exist. Would you like to generate them?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleGenerateRulesCancel} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleGenerateRulesConfirm} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
