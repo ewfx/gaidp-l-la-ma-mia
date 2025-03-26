@@ -77,8 +77,8 @@ Challenges We Faced
 
 ## 👥 Team
 
-- **Parth Shukla** - [GitHub](#) | [LinkedIn](#)
-- **Agastya Varma** - [GitHub](#) | [LinkedIn](#)
-- **Agniva Basak** - [GitHub](#) | [LinkedIn](#)
-- **Prithvi Shenoy** - [GitHub](#) | [LinkedIn](#)
-- **Kristen Matthew Dsouza** - [GitHub](#) | [LinkedIn](#)
+- **Parth Shukla** - [GitHub](#https://github.com/ParthS28) | [LinkedIn](#https://www.linkedin.com/in/parthsh/)
+- **Agastya Varma** - [GitHub](#https://github.com/agastya2002) | [LinkedIn](#https://www.linkedin.com/in/agastya-varma/)
+- **Agniva Basak** - [GitHub](#https://github.com/agnivabasak) | [LinkedIn](#https://www.linkedin.com/in/agniva-basak-b40b31115/)
+- **Prithvi Shenoy** - [GitHub](#https://github.com/prithvi-shenoy) | [LinkedIn](#https://www.linkedin.com/in/prithvi-shenoy-7517441aa/)
+- **Kristen Matthew Dsouza** - [GitHub](#https://github.com/Kris-Dsz) | [LinkedIn](#https://www.linkedin.com/in/kristen-mathew-dsouza/)
