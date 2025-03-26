@@ -1,1 +1,1 @@
-Demo file is zipped in Demo.mov.zip
+Demo video link can be found in video_link.txt
